@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cinema Functional Training</title>
+
+https://static.line-scdn.net/liff/edge/2/sdk.jsscript>
+
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    background:#f4f6f9;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+.container{
+    max-width:450px;
+    margin:50px auto;
+    padding:20px;
+}
+
+.card{
+    background:#ffffff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.logo{
+    text-align:center;
+    font-size:60px;
+}
+
+.title{
+    text-align:center;
+    color:#003DA5;
+    font-size:28px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-top:10px;
+    margin-bottom:30px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:#003DA5;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#002d7a;
+}
+
+.message{
+    margin-top:20px;
+    text-align:center;
+}
+
+.success{
+    color:green;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    font-weight:bold;
+}
+
+.loading{
+    color:#003DA5;
+}
+
+#profileBox{
+    margin-top:20px;
+    background:#f7f7f7;
+    padding:10px;
+    border-radius:10px;
+    font-size:12px;
+    word-break:break-all;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<div class="logo">🎬</div>
+
+<div class="title">
+Cinema Functional Training
+</div>
+
+<div class="subtitle">
+ยืนยันตัวตนพนักงานก่อนเข้าใช้งาน LINE OA
+</div>
+
+<input
+type="text"
+id="empId"
+placeholder="กรอกรหัสพนักงาน">
+
+<button onclick="registerEmployee()">
+ยืนยันตัวตน
+</button>
+
+<div id="message" class="message"></div>
+
+<div id="profileBox">
+กำลังเชื่อมต่อ LINE...
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const LIFF_ID = "2011893079-nLN62Tne";
+
+let lineUserId = "";
+let displayName = "";
+
+async function initializeLiff(){
+
+    try{
+
+        await liff.init({
+            liffId: LIFF_ID
+        });
+
+        if(!liff.isLoggedIn()){
+
+            liff.login();
+            return;
+        }
+
+        const profile =
+            await liff.getProfile();
+
+        lineUserId =
+            profile.userId;
+
+        displayName =
+            profile.displayName;
+
+        document.getElementById("profileBox").innerHTML =
+        `
+        <b>ชื่อ LINE</b> : ${displayName}<br>
+        <b>LINE User ID</b> : ${lineUserId}
+        `;
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("profileBox").innerHTML =
+        "ไม่สามารถเชื่อมต่อ LINE ได้";
+    }
+
+}
+
+initializeLiff();
+
+async function registerEmployee(){
+
+    const empId =
+        document.getElementById("empId")
+        .value
+        .trim();
+
+    if(empId===""){
+
+        document.getElementById("message").innerHTML =
+        "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
+
+        return;
+    }
+
+    document.getElementById("message").innerHTML =
+    "<div class='loading'>กำลังตรวจสอบข้อมูล...</div>";
+
+    /*
+      ตรงนี้ในอนาคตจะเรียก Azure Function
+      เพื่อตรวจสอบกับ SharePoint List
+    */
+
+    setTimeout(function(){
+
+        document.getElementById("message").innerHTML =
+        "<div class='success'>✅ ตรวจสอบสำเร็จ</div>";
+
+        console.log({
+            EmployeeID:empId,
+            LineUserID:lineUserId,
+            DisplayName:displayName
+        });
+
+    },1000);
+
+}
+
+</script>
+
+</body>
+</html>
