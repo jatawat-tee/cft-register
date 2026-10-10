@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Cinema Functional Training</title>
+<meta charset="utf-8">
+<title>Test LIFF</title>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
@@ -13,7 +11,7 @@
 
 <h2>Cinema Functional Training</h2>
 
-<div id="profileBox">
+<div id="result">
 กำลังเชื่อมต่อ LINE...
 </div>
 
@@ -21,34 +19,46 @@
 
 const LIFF_ID = "2011893079-nLN62Tne";
 
-async function initializeLiff() {
+async function testLiff() {
 
     try {
+
+        document.getElementById("result").innerHTML =
+            "เริ่มต้น LIFF...";
 
         await liff.init({
             liffId: LIFF_ID
         });
 
+        document.getElementById("result").innerHTML =
+            "LIFF Init สำเร็จ";
+
         if (!liff.isLoggedIn()) {
+
+            document.getElementById("result").innerHTML =
+                "กำลัง Login LINE...";
+
             liff.login();
             return;
         }
 
         const profile = await liff.getProfile();
 
-        document.getElementById("profileBox").innerHTML =
+        document.getElementById("result").innerHTML =
             "✅ " + profile.displayName;
 
     }
-    catch(error){
+    catch (error) {
 
-        document.getElementById("profileBox").innerHTML =
-            "❌ " + error.message;
+        document.getElementById("result").innerHTML =
+            "❌ ERROR : " + error;
+
+        console.error(error);
     }
 
 }
 
-initializeLiff();
+window.onload = testLiff;
 
 </script>
 
