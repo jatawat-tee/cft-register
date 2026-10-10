@@ -1,64 +1,260 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Test LIFF</title>
+<html lang="th">
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Cinema Functional Training</title>
+
+    https://static.line-scdn.net/liff/edge/2/sdk.jsscript>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f5f5f5;
+            margin:0;
+            padding:20px;
+            text-align:center;
+        }
+
+        .card{
+            background:#fff;
+            max-width:420px;
+            margin:auto;
+            padding:30px;
+            border-radius:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,.15);
+        }
+
+        h2{
+            color:#00B14F;
+        }
+
+        input{
+            width:100%;
+            padding:12px;
+            font-size:16px;
+            margin-top:15px;
+            box-sizing:border-box;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            background:#00B14F;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#009944;
+        }
+
+        .success{
+            color:green;
+            font-weight:bold;
+        }
+
+        .error{
+            color:red;
+            font-weight:bold;
+        }
+    </style>
 
 </head>
+
 <body>
 
-<h2>Cinema Functional Training</h2>
+<div class="card">
 
-<div id="result">
-กำลังเชื่อมต่อ LINE...
+    <h2>Cinema Functional Training</h2>
+
+    <div id="loading">
+        กำลังตรวจสอบข้อมูล...
+    </div>
+
+    <div id="registerForm" style="display:none;">
+
+        <p>กรุณากรอกรหัสพนักงาน</p>
+
+        <input
+            type="text"
+            id="empid"
+            placeholder="EMP ID">
+
+        <button onclick="register()">
+            ลงทะเบียน
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
 </div>
 
 <script>
 
 const LIFF_ID = "2011893079-nLN62Tne";
 
-async function testLiff() {
+/* เปลี่ยนเป็น URL Flow จริง */
+const CHECK_URL = "https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/04/workflows/e8f5c94a08484729b419bf494ca51617/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=x7ICoUUe-wjclp1XYpE7Bv7tqQtrdOAuEc9j0Vx7iqg";
 
-    try {
+const REGISTER_URL = "https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/bdac5324f88d4f8c889a94b60e2340b3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=N73SkhCq-kzqNMsiz0fbRSHfElpwiOcDPNzrRaQp9mw";
 
-        document.getElementById("result").innerHTML =
-            "เริ่มต้น LIFF...";
+let profile;
+
+async function start(){
+
+    try{
 
         await liff.init({
             liffId: LIFF_ID
         });
 
-        document.getElementById("result").innerHTML =
-            "LIFF Init สำเร็จ";
-
-        if (!liff.isLoggedIn()) {
-
-            document.getElementById("result").innerHTML =
-                "กำลัง Login LINE...";
-
+        if(!liff.isLoggedIn()){
             liff.login();
             return;
         }
 
-        const profile = await liff.getProfile();
+        profile = await liff.getProfile();
 
-        document.getElementById("result").innerHTML =
-            "✅ " + profile.displayName;
+        checkUser();
 
     }
-    catch (error) {
+    catch(err){
 
-        document.getElementById("result").innerHTML =
-            "❌ ERROR : " + error;
+        document.getElementById("loading").innerHTML =
+        "เกิดข้อผิดพลาด : " + err.message;
 
-        console.error(error);
     }
 
 }
 
-window.onload = testLiff;
+async function checkUser(){
+
+    try{
+
+        const response =
+        await fetch(CHECK_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                lineuid:profile.userId
+            })
+        });
+
+        const result =
+        await response.json();
+
+        if(result.registered){
+
+            document.getElementById("loading").style.display="none";
+
+            document.getElementById("result").innerHTML =
+            `
+            <div class="success">
+                ✅ ลงทะเบียนแล้ว
+                <br><br>
+                ${profile.displayName}
+            </div>
+            `;
+
+        }
+        else{
+
+            document.getElementById("loading").style.display="none";
+
+            document.getElementById("registerForm").style.display="block";
+
+        }
+
+    }
+    catch(err){
+
+        document.getElementById("loading").innerHTML =
+        err.message;
+
+    }
+
+}
+
+async function register(){
+
+    const empid =
+    document.getElementById("empid").value.trim();
+
+    if(empid===""){
+
+        alert("กรุณากรอกรหัสพนักงาน");
+
+        return;
+    }
+
+    try{
+
+        const response =
+        await fetch(REGISTER_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+
+                empid:empid,
+                lineuid:profile.userId,
+                displayname:profile.displayName
+
+            })
+        });
+
+        const result =
+        await response.json();
+
+        if(result.success){
+
+            document.getElementById("registerForm").style.display="none";
+
+            document.getElementById("result").innerHTML=
+            `
+            <div class="success">
+                ✅ ลงทะเบียนสำเร็จ
+                <br><br>
+                ยินดีต้อนรับ ${profile.displayName}
+            </div>
+            `;
+
+        }
+        else{
+
+            if(result.message==="EMP_NOT_FOUND"){
+
+                alert("ไม่พบรหัสพนักงาน");
+
+            }else{
+
+                alert(result.message);
+
+            }
+
+        }
+
+    }
+    catch(err){
+
+        alert(err.message);
+
+    }
+
+}
+
+start();
 
 </script>
 
