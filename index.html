@@ -1,146 +1,25 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cinema Functional Training</title>
+<title>Cinema Functional Training</title>
 
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background: #f4f6f9;
-            font-family: Segoe UI, Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 450px;
-            margin: 20px auto;
-        }
-
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,.1);
-        }
-
-        .logo {
-            font-size: 60px;
-            text-align: center;
-        }
-
-        .title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: #003DA5;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 10px;
-            background: #003DA5;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background: #002C7A;
-        }
-
-        #message {
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        #profileBox {
-            margin-top: 20px;
-            padding: 12px;
-            background: #f7f7f7;
-            border-radius: 10px;
-            font-size: 12px;
-            word-break: break-all;
-        }
-
-        .success{
-            color:green;
-            font-weight:bold;
-        }
-
-        .error{
-            color:red;
-            font-weight:bold;
-        }
-    </style>
 </head>
-
 <body>
 
-<div class="container">
+<h2>Cinema Functional Training</h2>
 
-    <div class="card">
-
-        <div class="logo">🎬</div>
-
-        <div class="title">
-            Cinema Functional Training
-        </div>
-
-        <div class="subtitle">
-            ยืนยันตัวตนพนักงานก่อนเข้าใช้งาน LINE OA
-        </div>
-
-        <input
-            type="text"
-            id="empId"
-            placeholder="กรอกรหัสพนักงาน">
-
-        <button onclick="registerEmployee()">
-            ยืนยันตัวตน
-        </button>
-
-        <div id="message"></div>
-
-        <div id="profileBox">
-            กำลังเชื่อมต่อ LINE...
-        </div>
-
-    </div>
-
+<div id="profileBox">
+กำลังเชื่อมต่อ LINE...
 </div>
 
 <script>
 
 const LIFF_ID = "2011893079-nLN62Tne";
-
-const POWER_AUTOMATE_URL =
-"https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com/powerautomate/automations/direct/cu/28/workflows/ad77eb3e944e4606aafe86996dfc78df/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iOPKgnWVH3P3CihV-_Q2JkPfdhCKOyCRyGBCa4PtVTk";
-
-let lineUserId = "";
-let displayName = "";
 
 async function initializeLiff() {
 
@@ -151,54 +30,27 @@ async function initializeLiff() {
         });
 
         if (!liff.isLoggedIn()) {
-
             liff.login();
             return;
         }
 
         const profile = await liff.getProfile();
 
-        lineUserId = profile.userId;
-        displayName = profile.displayName;
-
-        document.getElementById("profileBox").innerHTML = `
-            <b>ชื่อ LINE</b> : ${displayName}<br><br>
-            <b>LINE User ID</b><br>
-            ${lineUserId}
-        `;
+        document.getElementById("profileBox").innerHTML =
+            "✅ " + profile.displayName;
 
     }
-    catch (error) {
-
-        console.error(error);
+    catch(error){
 
         document.getElementById("profileBox").innerHTML =
-            "❌ " + error;
-
+            "❌ " + error.message;
     }
 
 }
 
 initializeLiff();
 
-async function registerEmployee() {
+</script>
 
-    const empId =
-        document.getElementById("empId")
-        .value
-        .trim();
-
-    if (!empId) {
-
-        document.getElementById("message").innerHTML =
-            "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
-
-        return;
-    }
-
-    try {
-
-        document.getElementById("message").innerHTML =
-            "กำลังบันทึกข้อมูล...";
-
-        const response = await
+</body>
+</html>
