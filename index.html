@@ -1,192 +1,134 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Functional Training</title>
 
-<title>Cinema Functional Training</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f4f6f9;
+            font-family: Segoe UI, Arial, sans-serif;
+        }
 
-<style>
+        .container {
+            max-width: 450px;
+            margin: 20px auto;
+        }
 
-body{
-    margin:0;
-    padding:0;
-    background:#f4f6f9;
-    font-family:Segoe UI, Arial, sans-serif;
-}
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.1);
+        }
 
-.container{
-    max-width:450px;
-    margin:50px auto;
-    padding:20px;
-}
+        .logo {
+            font-size: 60px;
+            text-align: center;
+        }
 
-.card{
-    background:#ffffff;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.1);
-}
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #003DA5;
+        }
 
-.logo{
-    text-align:center;
-    font-size:60px;
-}
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
 
-.title{
-    text-align:center;
-    color:#003DA5;
-    font-size:28px;
-    font-weight:bold;
-    margin-top:10px;
-}
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
 
-.subtitle{
-    text-align:center;
-    color:#666;
-    margin-top:10px;
-    margin-bottom:30px;
-}
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #003DA5;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    font-size:16px;
-    box-sizing:border-box;
-}
+        button:hover {
+            background: #002C7A;
+        }
 
-button{
-    width:100%;
-    padding:14px;
-    margin-top:15px;
-    border:none;
-    border-radius:10px;
-    background:#003DA5;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
+        #message {
+            margin-top: 15px;
+            text-align: center;
+        }
 
-button:hover{
-    background:#002d7a;
-}
+        #profileBox {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f7f7f7;
+            border-radius: 10px;
+            font-size: 12px;
+            word-break: break-all;
+        }
 
-.message{
-    margin-top:20px;
-    text-align:center;
-}
+        .success{
+            color:green;
+            font-weight:bold;
+        }
 
-.success{
-    color:green;
-    font-weight:bold;
-}
-
-.error{
-    color:red;
-    font-weight:bold;
-}
-
-.loading{
-    color:#003DA5;
-}
-
-#profileBox{
-    margin-top:20px;
-    background:#f7f7f7;
-    padding:10px;
-    border-radius:10px;
-    font-size:12px;
-    word-break:break-all;
-}
-
-</style>
-
+        .error{
+            color:red;
+            font-weight:bold;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="card">
+    <div class="card">
 
-<div class="logo">🎬</div>
+        <div class="logo">🎬</div>
 
-<div class="title">
-Cinema Functional Training
-</div>
+        <div class="title">
+            Cinema Functional Training
+        </div>
 
-<div class="subtitle">
-ยืนยันตัวตนพนักงานก่อนเข้าใช้งาน LINE OA
-</div>
+        <div class="subtitle">
+            ยืนยันตัวตนพนักงานก่อนเข้าใช้งาน LINE OA
+        </div>
 
-<input
-type="text"
-id="empId"
-placeholder="กรอกรหัสพนักงาน">
+        <input
+            type="text"
+            id="empId"
+            placeholder="กรอกรหัสพนักงาน">
 
-<button onclick="async function registerEmployee() {
+        <button onclick="registerEmployee()">
+            ยืนยันตัวตน
+        </button>
 
-    const empId =
-        document.getElementById("empId")
-        .value.trim();
+        <div id="message"></div>
 
-    if (!empId) {
+        <div id="profileBox">
+            กำลังเชื่อมต่อ LINE...
+        </div>
 
-        document.getElementById("message").innerHTML =
-            "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
-
-        return;
-    }
-
-    try {
-
-        document.getElementById("message").innerHTML =
-            "<div class='loading'>กำลังบันทึกข้อมูล...</div>";
-
-        const response = await fetch(
-            "https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com/powerautomate/automations/direct/cu/28/workflows/ad77eb3e944e4606aafe86996dfc78df/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iOPKgnWVH3P3CihV-_Q2JkPfdhCKOyCRyGBCa4PtVTk",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    employeeId: empId,
-                    displayName: displayName,
-                    lineUserId: lineUserId
-                })
-            }
-        );
-
-        document.getElementById("message").innerHTML =
-            "<div class='success'>✅ ลงทะเบียนสำเร็จ</div>";
-
-    }
-    catch (error) {
-
-        console.error(error);
-
-        document.getElementById("message").innerHTML =
-            "<div class='error'>❌ บันทึกข้อมูลไม่สำเร็จ</div>";
-
-    }
-
-}>
-ยืนยันตัวตน
-</button>
-
-<div id="message" class="message"></div>
-
-<div id="profileBox">
-กำลังเชื่อมต่อ LINE...
-</div>
-
-</div>
+    </div>
 
 </div>
 
@@ -194,45 +136,45 @@ placeholder="กรอกรหัสพนักงาน">
 
 const LIFF_ID = "2011893079-nLN62Tne";
 
+const POWER_AUTOMATE_URL =
+"https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com/powerautomate/automations/direct/cu/28/workflows/ad77eb3e944e4606aafe86996dfc78df/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iOPKgnWVH3P3CihV-_Q2JkPfdhCKOyCRyGBCa4PtVTk";
+
 let lineUserId = "";
 let displayName = "";
 
-async function initializeLiff(){
+async function initializeLiff() {
 
-    try{
+    try {
 
         await liff.init({
             liffId: LIFF_ID
         });
 
-        if(!liff.isLoggedIn()){
+        if (!liff.isLoggedIn()) {
 
             liff.login();
             return;
         }
 
-        const profile =
-            await liff.getProfile();
+        const profile = await liff.getProfile();
 
-        lineUserId =
-            profile.userId;
+        lineUserId = profile.userId;
+        displayName = profile.displayName;
 
-        displayName =
-            profile.displayName;
-
-        document.getElementById("profileBox").innerHTML =
-        `
-        <b>ชื่อ LINE</b> : ${displayName}<br>
-        <b>LINE User ID</b> : ${lineUserId}
+        document.getElementById("profileBox").innerHTML = `
+            <b>ชื่อ LINE</b> : ${displayName}<br><br>
+            <b>LINE User ID</b><br>
+            ${lineUserId}
         `;
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(error);
 
         document.getElementById("profileBox").innerHTML =
-        "ไม่สามารถเชื่อมต่อ LINE ได้";
+            "❌ " + error;
+
     }
 
 }
@@ -246,7 +188,7 @@ async function registerEmployee() {
         .value
         .trim();
 
-    if (empId === "") {
+    if (!empId) {
 
         document.getElementById("message").innerHTML =
             "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
@@ -254,87 +196,9 @@ async function registerEmployee() {
         return;
     }
 
-    document.getElementById("message").innerHTML =
-        "<div class='loading'>กำลังตรวจสอบข้อมูล...</div>";
-
     try {
 
-        const response = await fetch(
-            "วาง HTTP URL ของ Power Automate ตรงนี้",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    employeeId: empId,
-                    lineUserId: lineUserId
-                })
-            }
-        );
-
-        const result = await response.json();
-
-        if (result.success) {
-
-            document.getElementById("message").innerHTML =
-                "<div class='success'>✅ ยืนยันตัวตนสำเร็จ</div>";
-
-        } else {
-
-            document.getElementById("message").innerHTML =
-                "<div class='error'>❌ ไม่พบรหัสพนักงาน</div>";
-
-        }
-
-    } catch (error) {
-
-        console.error(error);
-
         document.getElementById("message").innerHTML =
-            "<div class='error'>❌ ระบบไม่สามารถเชื่อมต่อได้</div>";
+            "กำลังบันทึกข้อมูล...";
 
-    }
-
-}
-
-    const empId =
-        document.getElementById("empId")
-        .value
-        .trim();
-
-    if(empId===""){
-
-        document.getElementById("message").innerHTML =
-        "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
-
-        return;
-    }
-
-    document.getElementById("message").innerHTML =
-    "<div class='loading'>กำลังตรวจสอบข้อมูล...</div>";
-
-    /*
-      ตรงนี้ในอนาคตจะเรียก Azure Function
-      เพื่อตรวจสอบกับ SharePoint List
-    */
-
-    setTimeout(function(){
-
-        document.getElementById("message").innerHTML =
-        "<div class='success'>✅ ตรวจสอบสำเร็จ</div>";
-
-        console.log({
-            EmployeeID:empId,
-            LineUserID:lineUserId,
-            DisplayName:displayName
-        });
-
-    },1000);
-
-}
-
-</script>
-
-</body>
-</html>
+        const response = await
