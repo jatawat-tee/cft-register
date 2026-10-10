@@ -129,7 +129,58 @@ type="text"
 id="empId"
 placeholder="กรอกรหัสพนักงาน">
 
-<button onclick="registerEmployee()">
+<button onclick="async function registerEmployee() {
+
+    const empId =
+        document.getElementById("empId")
+        .value.trim();
+
+    if(!empId){
+
+        document.getElementById("message").innerHTML =
+        "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
+
+        return;
+    }
+
+    try{
+
+        document.getElementById("message").innerHTML =
+        "<div class='loading'>กำลังบันทึกข้อมูล...</div>";
+
+        const response =
+        await fetch(
+        "PASTE_POWER_AUTOMATE_URL_HERE",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                employeeId: empId,
+                displayName: displayName,
+                lineUserId: lineUserId
+            })
+        });
+
+        const result =
+        await response.json();
+
+        if(result.success){
+
+            document.getElementById("message").innerHTML =
+            "<div class='success'>✅ ลงทะเบียนสำเร็จ</div>";
+
+        }
+
+    }
+    catch(error){
+
+        document.getElementById("message").innerHTML =
+        "<div class='error'>❌ บันทึกข้อมูลไม่สำเร็จ</div>";
+
+    }
+}">
 ยืนยันตัวตน
 </button>
 
