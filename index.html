@@ -135,52 +135,48 @@ placeholder="กรอกรหัสพนักงาน">
         document.getElementById("empId")
         .value.trim();
 
-    if(!empId){
+    if (!empId) {
 
         document.getElementById("message").innerHTML =
-        "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
+            "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
 
         return;
     }
 
-    try{
+    try {
 
         document.getElementById("message").innerHTML =
-        "<div class='loading'>กำลังบันทึกข้อมูล...</div>";
+            "<div class='loading'>กำลังบันทึกข้อมูล...</div>";
 
-        const response =
-        await fetch(
-        "PASTE_POWER_AUTOMATE_URL_HERE",
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                employeeId: empId,
-                displayName: displayName,
-                lineUserId: lineUserId
-            })
-        });
+        const response = await fetch(
+            "https://default4b3b64f8e08e43bc95bf15d8ae1d3d.5c.environment.api.powerplatform.com/powerautomate/automations/direct/cu/28/workflows/ad77eb3e944e4606aafe86996dfc78df/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iOPKgnWVH3P3CihV-_Q2JkPfdhCKOyCRyGBCa4PtVTk",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    employeeId: empId,
+                    displayName: displayName,
+                    lineUserId: lineUserId
+                })
+            }
+        );
 
-        const result =
-        await response.json();
-
-        if(result.success){
-
-            document.getElementById("message").innerHTML =
+        document.getElementById("message").innerHTML =
             "<div class='success'>✅ ลงทะเบียนสำเร็จ</div>";
 
-        }
-
     }
-    catch(error){
+    catch (error) {
+
+        console.error(error);
 
         document.getElementById("message").innerHTML =
-        "<div class='error'>❌ บันทึกข้อมูลไม่สำเร็จ</div>";
+            "<div class='error'>❌ บันทึกข้อมูลไม่สำเร็จ</div>";
 
     }
-}">
+
+}>
 ยืนยันตัวตน
 </button>
 
