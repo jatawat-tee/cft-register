@@ -192,7 +192,64 @@ async function initializeLiff(){
 
 initializeLiff();
 
-async function registerEmployee(){
+async function registerEmployee() {
+
+    const empId =
+        document.getElementById("empId")
+        .value
+        .trim();
+
+    if (empId === "") {
+
+        document.getElementById("message").innerHTML =
+            "<div class='error'>กรุณากรอกรหัสพนักงาน</div>";
+
+        return;
+    }
+
+    document.getElementById("message").innerHTML =
+        "<div class='loading'>กำลังตรวจสอบข้อมูล...</div>";
+
+    try {
+
+        const response = await fetch(
+            "วาง HTTP URL ของ Power Automate ตรงนี้",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    employeeId: empId,
+                    lineUserId: lineUserId
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            document.getElementById("message").innerHTML =
+                "<div class='success'>✅ ยืนยันตัวตนสำเร็จ</div>";
+
+        } else {
+
+            document.getElementById("message").innerHTML =
+                "<div class='error'>❌ ไม่พบรหัสพนักงาน</div>";
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("message").innerHTML =
+            "<div class='error'>❌ ระบบไม่สามารถเชื่อมต่อได้</div>";
+
+    }
+
+}
 
     const empId =
         document.getElementById("empId")
