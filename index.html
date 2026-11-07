@@ -124,19 +124,23 @@ async function initializeLIFF() {
 
 async function register(){
 
-    const empId =
-        document.getElementById("empid").value.trim();
+ const empId =
+ document.getElementById("empid").value.trim();
 
-    if(empId === ""){
-        alert("กรุณากรอกรหัสพนักงาน");
-        return;
-    }
+ if(empId==""){
+   alert("กรุณากรอกรหัสพนักงาน");
+   return;
+ }
 
-    alert(
-      "EMP_ID : " + empId +
-      "\n\nLINE_USER_ID : " + profile.userId
-    );
+ console.log(profile.userId);
 
+ alert(
+   "EMP_ID : " + empId +
+   "\nLINE_USER_ID : " +
+   profile.userId
+ );
+
+}
     /*
     STEP ต่อไป
 
