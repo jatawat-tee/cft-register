@@ -33,6 +33,7 @@ h2{
 .info{
     text-align:center;
     margin-bottom:20px;
+    word-break: break-all;
 }
 
 input{
@@ -105,15 +106,15 @@ async function initializeLIFF() {
 
         profile = await liff.getProfile();
 
-        document.getElementById("name")
-.innerHTML =
-`
-สวัสดี ${profile.displayName}
-<br><br>
-LINE USER ID :
-<br>
-${profile.userId}
-`;
+        document.getElementById("userInfo").innerHTML =
+        `
+        <strong>${profile.displayName}</strong>
+        <br><br>
+        LINE USER ID
+        <br>
+        ${profile.userId}
+        `;
+
     }
     catch(error){
 
@@ -126,41 +127,23 @@ ${profile.userId}
 
 async function register(){
 
- const empId =
- document.getElementById("empid").value.trim();
+    const empId =
+        document.getElementById("empid").value.trim();
 
- if(empId==""){
-   alert("กรุณากรอกรหัสพนักงาน");
-   return;
- }
+    if(empId==""){
+        alert("กรุณากรอกรหัสพนักงาน");
+        return;
+    }
 
- console.log(profile.userId);
+    console.log("EMP_ID =", empId);
+    console.log("LINE USER ID =", profile.userId);
 
- alert(
-   "EMP_ID : " + empId +
-   "\nLINE_USER_ID : " +
-   profile.userId
- );
+    alert(
+      "EMP_ID : " + empId +
+      "\n\nLINE_USER_ID : " +
+      profile.userId
+    );
 
-}
-    /*
-    STEP ต่อไป
-
-    ส่งเข้า Power Automate
-
-    await fetch("POWER_AUTOMATE_URL", {
-       method:"POST",
-       headers:{
-         "Content-Type":"application/json"
-       },
-       body:JSON.stringify({
-            empId: empId,
-            lineUserId: profile.userId,
-            displayName: profile.displayName
-       })
-    });
-
-    */
 }
 
 initializeLIFF();
