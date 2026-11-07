@@ -105,13 +105,15 @@ async function initializeLIFF() {
 
         profile = await liff.getProfile();
 
-        document.getElementById("userInfo").innerHTML =
-            `
-            <strong>${profile.displayName}</strong>
-            `;
-
-        console.log("LINE USER ID =", profile.userId);
-
+        document.getElementById("name")
+.innerHTML =
+`
+สวัสดี ${profile.displayName}
+<br><br>
+LINE USER ID :
+<br>
+${profile.userId}
+`;
     }
     catch(error){
 
