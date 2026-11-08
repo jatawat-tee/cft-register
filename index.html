@@ -183,12 +183,9 @@ async function registerUser(){
     if(empId === ""){
 
         alert("กรุณากรอกรหัสพนักงาน");
-
         return;
 
     }
-
-    document.getElementById("registerBtn").disabled = true;
 
     const payload = {
 
@@ -200,30 +197,21 @@ async function registerUser(){
 
     try{
 
-        const response = await fetch(
+        await fetch(
             GAS_URL,
             {
                 method: "POST",
+                mode: "no-cors",
                 headers:{
-                    "Content-Type":"application/json"
+                    "Content-Type":"text/plain"
                 },
                 body: JSON.stringify(payload)
             }
         );
 
-        const result = await response.json();
+        alert("✅ ลงทะเบียนสำเร็จ");
 
-        if(result.success){
-
-            alert("✅ ลงทะเบียนสำเร็จ");
-
-            document.getElementById("empid").value = "";
-
-        }else{
-
-            alert("❌ บันทึกข้อมูลไม่สำเร็จ");
-
-        }
+        document.getElementById("empid").value = "";
 
     }
     catch(error){
@@ -233,6 +221,8 @@ async function registerUser(){
         alert("❌ เกิดข้อผิดพลาด");
 
     }
+
+}
 
     document.getElementById("registerBtn").disabled = false;
 
