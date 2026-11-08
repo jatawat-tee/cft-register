@@ -122,12 +122,18 @@ TRAINING
     maxlength="9"
     placeholder="กรอกรหัสพนักงาน 9 หลัก">
 
-<button
-    id="registerBtn"
-    onclick="registerUser()">
-    REGISTER
+<button id="registerBtn" onclick="registerUser()">
+REGISTER
 </button>
 
+<div id="resultMessage" style="
+    display:none;
+    margin-top:20px;
+    padding:20px;
+    background:#ffffff;
+    border-radius:8px;
+    border:2px solid #39b54a;
+">
 </div>
 
 <div class="footer">
@@ -225,9 +231,33 @@ const empId =
             }
         );
 
-        alert("✅ ส่งข้อมูลเรียบร้อย");
+document.getElementById("empid").value = "";
 
-        document.getElementById("empid").value = "";
+document.getElementById("resultMessage").style.display =
+    "block";
+
+document.getElementById("resultMessage").innerHTML =
+`
+<h3 style="color:#39b54a;">
+✅ ลงทะเบียนสำเร็จ
+</h3>
+
+<p>
+ขอบคุณสำหรับการลงทะเบียน
+</p>
+
+<p>
+ข้อมูลของท่านได้รับการบันทึกเรียบร้อยแล้ว
+</p>
+
+<p>
+EMP ID : ${empId}
+</p>
+
+<p>
+LINE : ${profile.displayName}
+</p>
+`;
 
     }
     catch(error){
