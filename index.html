@@ -168,34 +168,24 @@ async function initializeLIFF(){
 
 async function registerUser(){
 
-const empId =
-    document.getElementById("empid")
-    .value
-    .trim();
+    const empId =
+        document.getElementById("empid")
+        .value
+        .trim();
 
-if(empId === ""){
+    if(empId === ""){
 
-    alert("กรุณากรอกรหัสพนักงาน");
-    return;
-
-}
-
-if(!/^\d{9}$/.test(empId)){
-
-    alert("กรุณากรอกรหัสพนักงานให้เป็นตัวเลข 9 หลัก");
-
-    return;
-
-}
-
-    if(!profile){
-
-        alert("ไม่พบข้อมูล LINE");
+        alert("กรุณากรอกรหัสพนักงาน");
         return;
 
     }
 
-    document.getElementById("registerBtn").disabled = true;
+    if(!/^\d{9}$/.test(empId)){
+
+        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
+        return;
+
+    }
 
     const payload = {
 
@@ -205,25 +195,41 @@ if(!/^\d{9}$/.test(empId)){
 
     };
 
-    console.log(payload);
+    document.getElementById("registerBtn").disabled = true;
 
     try{
 
-        await fetch(
+        const response = await fetch(
             GAS_URL,
             {
                 method: "POST",
-                mode: "no-cors",
+                redirect: "follow",
                 headers:{
-                    "Content-Type":"text/plain"
+                    "Content-Type":"text/plain;charset=utf-8"
                 },
                 body: JSON.stringify(payload)
             }
         );
 
-        alert("✅ ลงทะเบียนสำเร็จ");
+        const result = await response.json();
 
-        document.getElementById("empid").value = "";
+        if(result.status === "ALREADY_REGISTERED"){
+
+            alert("⚠️ ท่านเคยลงทะเบียนแล้ว");
+
+        }
+        else if(result.status === "SUCCESS"){
+
+            alert("✅ ลงทะเบียนสำเร็จ");
+
+            document.getElementById("empid").value = "";
+
+        }
+        else{
+
+            alert("❌ ไม่สามารถบันทึกข้อมูลได้");
+
+        }
 
     }
     catch(error){
