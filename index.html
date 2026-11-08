@@ -2,51 +2,103 @@
 <html lang="th">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cinema Registration</title>
+<title>Cinema Functional Training</title>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <style>
 
-body{
-    font-family: Arial, sans-serif;
-    background:#f5f5f5;
+*{
     margin:0;
-    padding:20px;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+}
+
+.topbar{
+    width:100%;
+    background:#39b54a;
+    color:white;
+    text-align:center;
+    padding:8px;
+    font-size:12px;
+    font-weight:bold;
 }
 
 .container{
-    max-width:420px;
-    margin:40px auto;
-    background:#fff;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 4px 12px rgba(0,0,0,.1);
+    padding:30px;
+    text-align:center;
 }
 
-h2{
-    text-align:center;
-    color:#06C755;
+.logo1{
+    font-size:26px;
+    margin-top:40px;
+    color:#000;
 }
 
-.info{
-    text-align:center;
+.logo2{
+    font-size:56px;
+    line-height:0.95;
+    font-weight:bold;
+    color:#39b54a;
+    margin-top:5px;
+}
+
+.user{
+    margin-top:20px;
     margin-bottom:20px;
-    word-break:break-all;
+    color:#666;
+    font-size:14px;
+}
+
+input{
+    width:100%;
+    height:50px;
+    border:2px solid #39b54a;
+    padding:10px;
+    font-size:16px;
+    margin-top:40px;
 }
 
 button{
     width:100%;
-    padding:12px;
-    background:#06C755;
-    color:white;
+    height:55px;
+    margin-top:15px;
     border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
+    background:#39b54a;
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    border-radius:4px;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#39b54a;
+    color:white;
+    text-align:center;
+    padding:8px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.loading{
+    color:#999;
 }
 
 </style>
@@ -55,26 +107,44 @@ button{
 
 <body>
 
+<div class="topbar">
+REGISTRATION
+</div>
+
 <div class="container">
 
-<h2>Cinema Registration</h2>
+<div class="logo1">
+CINEMA
+</div>
 
-<div id="userInfo" class="info">
+<div class="logo2">
+FUNCTIONAL<br>
+TRAINING
+</div>
+
+<div id="userInfo" class="user loading">
 Loading...
 </div>
 
-<button onclick="openPowerApps()">
-ลงทะเบียน
+<input
+    id="empid"
+    type="text"
+    maxlength="9"
+    placeholder="กรอกรหัสพนักงาน 9 หลัก">
+
+<button onclick="register()">
+REGISTER
 </button>
 
+</div>
+
+<div class="footer">
+LINE OA
 </div>
 
 <script>
 
 const LIFF_ID = "2012456984-RGi9YPD7";
-
-const POWER_APPS_URL =
-"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
 
 let profile = null;
 
@@ -94,39 +164,62 @@ async function initializeLIFF(){
         profile = await liff.getProfile();
 
         document.getElementById("userInfo").innerHTML =
-        `
-            <strong>${profile.displayName}</strong>
-            <br><br>
-            LINE USER ID
-            <br>
-            ${profile.userId}
-        `;
+            profile.displayName;
 
     }
     catch(error){
 
         document.getElementById("userInfo").innerHTML =
-        error.message;
+            "ไม่สามารถเชื่อมต่อ LINE ได้";
 
+        console.error(error);
     }
 
 }
 
-function openPowerApps(){
+async function register(){
 
-    if(!profile){
-        alert("ไม่สามารถดึงข้อมูล LINE ได้");
+    const empId =
+        document.getElementById("empid").value.trim();
+
+    if(empId === ""){
+
+        alert("กรุณากรอกรหัสพนักงาน");
+
         return;
     }
 
-    const appUrl =
-        POWER_APPS_URL +
-        "&LINE_USER_ID=" +
-        encodeURIComponent(profile.userId) +
-        "&DISPLAY_NAME=" +
-        encodeURIComponent(profile.displayName);
+    const payload = {
 
-    window.location.href = appUrl;
+        EMP_ID: empId,
+
+        LINE_USER_ID: profile.userId,
+
+        LINE_DISPLAY_NAME: profile.displayName
+
+    };
+
+    console.log(payload);
+
+    alert(
+        "พร้อมส่งข้อมูล\n\n" +
+        "EMP_ID : " + empId
+    );
+
+    /*
+    STEP ต่อไป
+
+    ส่งเข้า API / Power Automate
+
+    fetch(API_URL,{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify(payload)
+    })
+
+    */
 
 }
 
