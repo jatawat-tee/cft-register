@@ -2,7 +2,6 @@
 <html lang="th">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -20,16 +19,14 @@
 }
 
 body{
-    background:#f2f2f2;
+    background:#efefef;
 }
 
 .topbar{
-    width:100%;
     background:#39b54a;
     color:white;
     text-align:center;
-    padding:8px;
-    font-size:12px;
+    padding:10px;
     font-weight:bold;
 }
 
@@ -39,66 +36,48 @@ body{
 }
 
 .logo1{
-    font-size:26px;
-    margin-top:40px;
+    font-size:28px;
     color:#000;
+    margin-top:50px;
 }
 
 .logo2{
-    font-size:56px;
-    line-height:0.95;
-    font-weight:bold;
+    font-size:64px;
     color:#39b54a;
-    margin-top:5px;
+    font-weight:bold;
+    line-height:0.95;
 }
 
 .user{
-    margin-top:20px;
-    margin-bottom:20px;
-    color:#666;
-    font-size:14px;
-}
-
-input{
-    width:100%;
-    height:50px;
-    border:2px solid #39b54a;
-    padding:10px;
+    margin-top:25px;
+    margin-bottom:25px;
+    color:#888;
     font-size:16px;
-    margin-top:40px;
+    min-height:24px;
 }
 
 button{
     width:100%;
     height:55px;
-    margin-top:15px;
-    border:none;
+    margin-top:20px;
     background:#39b54a;
     color:white;
+    border:none;
     font-size:24px;
     font-weight:bold;
     border-radius:4px;
 }
 
-button:active{
-    transform:scale(.98);
-}
-
 .footer{
     position:fixed;
-    bottom:0;
     left:0;
-    right:0;
+    bottom:0;
+    width:100%;
+    padding:10px;
     background:#39b54a;
     color:white;
     text-align:center;
-    padding:8px;
-    font-size:12px;
     font-weight:bold;
-}
-
-.loading{
-    color:#999;
 }
 
 </style>
@@ -122,17 +101,9 @@ FUNCTIONAL<br>
 TRAINING
 </div>
 
-<div id="userInfo" class="user loading">
-Loading...
-</div>
+<div id="userInfo" class="user"></div>
 
-<input
-    id="empid"
-    type="text"
-    maxlength="9"
-    placeholder="กรอกรหัสพนักงาน 9 หลัก">
-
-<button onclick="register()">
+<button onclick="openPowerApps()">
 REGISTER
 </button>
 
@@ -145,6 +116,9 @@ LINE OA
 <script>
 
 const LIFF_ID = "2012456984-RGi9YPD7";
+
+const POWER_APPS_URL =
+"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
 
 let profile = null;
 
@@ -169,57 +143,26 @@ async function initializeLIFF(){
     }
     catch(error){
 
-        document.getElementById("userInfo").innerHTML =
-            "ไม่สามารถเชื่อมต่อ LINE ได้";
-
         console.error(error);
+
     }
 
 }
 
-async function register(){
+function openPowerApps(){
 
-    const empId =
-        document.getElementById("empid").value.trim();
-
-    if(empId === ""){
-
-        alert("กรุณากรอกรหัสพนักงาน");
-
+    if(!profile){
         return;
     }
 
-    const payload = {
+    const appUrl =
+        POWER_APPS_URL +
+        "&LINE_USER_ID=" +
+        encodeURIComponent(profile.userId) +
+        "&DISPLAY_NAME=" +
+        encodeURIComponent(profile.displayName);
 
-        EMP_ID: empId,
-
-        LINE_USER_ID: profile.userId,
-
-        LINE_DISPLAY_NAME: profile.displayName
-
-    };
-
-    console.log(payload);
-
-    alert(
-        "พร้อมส่งข้อมูล\n\n" +
-        "EMP_ID : " + empId
-    );
-
-    /*
-    STEP ต่อไป
-
-    ส่งเข้า API / Power Automate
-
-    fetch(API_URL,{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(payload)
-    })
-
-    */
+    window.location.href = appUrl;
 
 }
 
