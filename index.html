@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -18,7 +20,7 @@
 }
 
 body{
-    background:#f2f2f2;
+    background:#efefef;
 }
 
 .topbar{
@@ -26,8 +28,8 @@ body{
     color:white;
     text-align:center;
     padding:10px;
-    font-size:12px;
     font-weight:bold;
+    letter-spacing:1px;
 }
 
 .container{
@@ -36,66 +38,39 @@ body{
 }
 
 .logo1{
-    margin-top:40px;
-    font-size:28px;
+    font-size:32px;
+    margin-top:60px;
+    color:#000;
 }
 
 .logo2{
-    margin-top:5px;
-    font-size:56px;
-    line-height:0.95;
-    color:#39b54a;
+    font-size:64px;
     font-weight:bold;
+    color:#39b54a;
+    line-height:0.95;
 }
 
 .user{
-    margin-top:20px;
-    margin-bottom:20px;
-}
-
-.display-name{
-    font-size:18px;
-    font-weight:bold;
-    color:#333;
-}
-
-.line-user-id{
-    margin-top:10px;
-    font-size:12px;
-    color:#666;
-    word-break:break-all;
-}
-
-input{
-    width:100%;
-    height:50px;
     margin-top:30px;
-    padding:12px;
-    border:2px solid #39b54a;
-    border-radius:4px;
-    font-size:16px;
+    margin-bottom:30px;
+    color:#888;
+    font-size:18px;
+    min-height:24px;
 }
 
 button{
     width:100%;
-    height:55px;
-    margin-top:15px;
+    height:60px;
     border:none;
-    border-radius:4px;
     background:#39b54a;
     color:white;
-    font-size:24px;
+    font-size:28px;
     font-weight:bold;
-    cursor:pointer;
+    border-radius:4px;
 }
 
-button:disabled{
-    opacity:.5;
-}
-
-.status{
-    margin-top:15px;
-    font-size:14px;
+button:active{
+    transform:scale(.98);
 }
 
 .footer{
@@ -106,17 +81,8 @@ button:disabled{
     background:#39b54a;
     color:white;
     text-align:center;
-    padding:8px;
-    font-size:12px;
+    padding:10px;
     font-weight:bold;
-}
-
-.success{
-    color:green;
-}
-
-.error{
-    color:red;
 }
 
 </style>
@@ -131,32 +97,20 @@ REGISTRATION
 
 <div class="container">
 
-    <div class="logo1">
-        CINEMA
-    </div>
+<div class="logo1">
+CINEMA
+</div>
 
-    <div class="logo2">
-        FUNCTIONAL<br>
-        TRAINING
-    </div>
+<div class="logo2">
+FUNCTIONAL<br>
+TRAINING
+</div>
 
-    <div id="userInfo" class="user">
-        Loading...
-    </div>
+<div id="userInfo" class="user"></div>
 
-    <input
-        id="empid"
-        type="text"
-        maxlength="9"
-        placeholder="กรอกรหัสพนักงาน 9 หลัก">
-
-    <button
-        id="btnRegister"
-        onclick="register()">
-        REGISTER
-    </button>
-
-    <div id="status" class="status"></div>
+<button onclick="openPowerApps()">
+REGISTER
+</button>
 
 </div>
 
@@ -168,8 +122,8 @@ LINE OA
 
 const LIFF_ID = "2012456984-RGi9YPD7";
 
-const FLOW_URL =
-"https://0fa9beaa1fe4eb889f79f3312520c9.86.environment.api.powerplatform.com/powerautomate/automations/direct/cu/12/workflows/4b9e3000ff40478287ef28d68e1dbccf/triggers/manual/paths/invoke?api-version=1";
+const POWER_APPS_URL =
+"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
 
 let profile = null;
 
@@ -177,93 +131,53 @@ async function initializeLIFF(){
 
     try{
 
-        document.getElementById("userInfo").innerHTML =
-        "STEP 1 : Initializing LIFF...";
-
         await liff.init({
             liffId: LIFF_ID
         });
 
-        document.getElementById("userInfo").innerHTML =
-        "STEP 2 : Checking Login...";
-
         if(!liff.isLoggedIn()){
-
-            document.getElementById("userInfo").innerHTML =
-            "STEP 3 : Redirect Login";
-
             liff.login();
             return;
         }
 
-        document.getElementById("userInfo").innerHTML =
-        "STEP 4 : Loading Profile";
-
         profile = await liff.getProfile();
 
         document.getElementById("userInfo").innerHTML =
-        `
-            <div class="display-name">
-                ${profile.displayName}
-            </div>
+            profile.displayName;
 
-            <div class="line-user-id">
-                ${profile.userId}
-            </div>
-        `;
+        console.log("Display Name:", profile.displayName);
+        console.log("User ID:", profile.userId);
 
     }
     catch(error){
 
         console.error(error);
 
-        document.getElementById("userInfo").innerHTML =
-        `
-            <div class="error">
-                ERROR<br><br>
-                ${error.message}
-            </div>
-        `;
-
     }
 
 }
 
-async function register(){
-
-    const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
-
-    if(empId === ""){
-
-        alert("กรุณากรอกรหัสพนักงาน");
-
-        return;
-
-    }
+function openPowerApps(){
 
     if(!profile){
-
-        alert("ไม่พบข้อมูล LINE");
-
         return;
-
     }
 
-    const payload = {
+    const appUrl =
+        POWER_APPS_URL +
+        "&DISPLAY_NAME=" +
+        encodeURIComponent(profile.displayName) +
+        "&LINE_USER_ID=" +
+        encodeURIComponent(profile.userId);
 
-        EMP_ID: empId,
-        LINE_USER_ID: profile.userId,
-        LINE_DISPLAY_NAME: profile.displayName
+    window.location.href = appUrl;
 
-    };
+}
 
-    console.log(payload);
+initializeLIFF();
 
-    document.getElementById("status").innerHTML =
-    "กำลังส่งข้อมูล...";
+</script>
 
-    document.getElementById("btnRegister").disabled =
-    true;
+</body>
+
+</html>
