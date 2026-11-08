@@ -1,65 +1,52 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE Registration</title>
 
-<title>Cinema Registration</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f5f5f5;
-    margin:0;
-    padding:20px;
-}
+        .container {
+            max-width: 420px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        }
 
-.container{
-    max-width:420px;
-    margin:40px auto;
-    background:#ffffff;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 4px 12px rgba(0,0,0,.1);
-}
+        h2 {
+            text-align: center;
+            color: #06C755;
+        }
 
-h2{
-    text-align:center;
-    color:#06C755;
-}
+        .info {
+            text-align: center;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
 
-.info{
-    text-align:center;
-    margin-bottom:20px;
-    word-break: break-all;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin-bottom:12px;
-    border:1px solid #ddd;
-    border-radius:8px;
-    box-sizing:border-box;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    background:#06C755;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:16px;
-}
-
-button:hover{
-    opacity:.9;
-}
-</style>
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #06C755;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
 
 </head>
 
@@ -69,17 +56,11 @@ button:hover{
 
     <h2>Cinema Registration</h2>
 
-    <div class="info" id="userInfo">
+    <div id="userInfo" class="info">
         Loading...
     </div>
 
-    <input
-        type="text"
-        id="empid"
-        placeholder="กรอกรหัสพนักงาน 9 หลัก"
-    >
-
-    <button onclick="register()">
+    <button onclick="goToPowerApps()">
         ลงทะเบียน
     </button>
 
@@ -88,6 +69,12 @@ button:hover{
 <script>
 
 const LIFF_ID = "2012456984-RGi9YPD7";
+
+/*
+ใส่ URL ของ Power Apps ที่ Published แล้ว
+*/
+const APP_URL =
+"https://apps.powerapps.com/play/xxxxxxxxxxxxxxxx";
 
 let profile = null;
 
@@ -125,25 +112,21 @@ async function initializeLIFF() {
     }
 }
 
-async function register(){
+function goToPowerApps(){
 
-    const empId =
-        document.getElementById("empid").value.trim();
-
-    if(empId==""){
-        alert("กรุณากรอกรหัสพนักงาน");
+    if(!profile){
+        alert("ไม่สามารถดึงข้อมูล LINE ได้");
         return;
     }
 
-    console.log("EMP_ID =", empId);
-    console.log("LINE USER ID =", profile.userId);
+    const powerAppsUrl =
+        APP_URL +
+        "?LINE_USER_ID=" +
+        encodeURIComponent(profile.userId) +
+        "&DISPLAY_NAME=" +
+        encodeURIComponent(profile.displayName);
 
-    alert(
-      "EMP_ID : " + empId +
-      "\n\nLINE_USER_ID : " +
-      profile.userId
-    );
-
+    window.location.href = powerAppsUrl;
 }
 
 initializeLIFF();
@@ -151,4 +134,5 @@ initializeLIFF();
 </script>
 
 </body>
+
 </html>
