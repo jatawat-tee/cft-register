@@ -2,7 +2,6 @@
 <html lang="th">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -40,7 +39,6 @@ body{
 .logo1{
     margin-top:40px;
     font-size:28px;
-    color:#000;
 }
 
 .logo2{
@@ -72,7 +70,7 @@ body{
 input{
     width:100%;
     height:50px;
-    margin-top:35px;
+    margin-top:30px;
     padding:12px;
     border:2px solid #39b54a;
     border-radius:4px;
@@ -89,7 +87,6 @@ button{
     color:white;
     font-size:24px;
     font-weight:bold;
-    cursor:pointer;
 }
 
 button:disabled{
@@ -103,9 +100,9 @@ button:disabled{
 
 .footer{
     position:fixed;
-    bottom:0;
     left:0;
     right:0;
+    bottom:0;
     background:#39b54a;
     color:white;
     text-align:center;
@@ -149,168 +146,3 @@ REGISTRATION
 
     <input
         id="empid"
-        type="text"
-        maxlength="9"
-        placeholder="กรอกรหัสพนักงาน 9 หลัก">
-
-    <button id="btnRegister" onclick="register()">
-        REGISTER
-    </button>
-
-    <div id="status" class="status"></div>
-
-</div>
-
-<div class="footer">
-LINE OA
-</div>
-
-<script>
-
-const LIFF_ID = "2012456984-RGi9YPD7";
-
-const FLOW_URL =
-"https://0fa9beaa1fe4eb889f79f3312520c9.86.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/12/workflows/4b9e3000ff40478287ef28d68e1dbccf/triggers/manual/paths/invoke?api-version=1";
-
-let profile = null;
-
-async function initializeLIFF(){
-
-    try{
-
-        await liff.init({
-            liffId: LIFF_ID
-        });
-
-        if(!liff.isLoggedIn()){
-            liff.login();
-            return;
-        }
-
-        profile = await liff.getProfile();
-
-        document.getElementById("userInfo").innerHTML =
-        `
-            <div class="display-name">
-                ${profile.displayName}
-            </div>
-
-            <div class="line-user-id">
-                ${profile.userId}
-            </div>
-        `;
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        document.getElementById("userInfo").innerHTML =
-        `
-            <div class="error">
-                ไม่สามารถโหลดข้อมูล LINE ได้
-            </div>
-        `;
-
-    }
-
-}
-
-async function register(){
-
-    const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
-
-    if(empId === ""){
-
-        alert("กรุณากรอกรหัสพนักงาน");
-
-        return;
-
-    }
-
-    const payload = {
-
-        EMP_ID: empId,
-
-        LINE_USER_ID: profile.userId,
-
-        LINE_DISPLAY_NAME: profile.displayName
-
-    };
-
-    console.log(payload);
-
-    document.getElementById("status").innerHTML =
-    "กำลังส่งข้อมูล...";
-
-    document.getElementById("btnRegister").disabled =
-    true;
-
-    try{
-
-        const response =
-        await fetch(
-            FLOW_URL,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(payload)
-            }
-        );
-
-        if(response.ok){
-
-            document.getElementById("status").innerHTML =
-            '<span class="success">✅ ลงทะเบียนสำเร็จ</span>';
-
-            alert(
-                "✅ ลงทะเบียนสำเร็จ\n\n" +
-                "EMP ID : " + empId +
-                "\n\nLINE USER ID : " +
-                profile.userId
-            );
-
-            document.getElementById("empid").value = "";
-
-        }
-        else{
-
-            document.getElementById("status").innerHTML =
-            '<span class="error">❌ ไม่สามารถบันทึกข้อมูลได้</span>';
-
-            alert(
-                "❌ ไม่สามารถบันทึกข้อมูลได้"
-            );
-
-        }
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        document.getElementById("status").innerHTML =
-        '<span class="error">❌ เกิดข้อผิดพลาด</span>';
-
-        alert(
-            "❌ เกิดข้อผิดพลาดในการส่งข้อมูล"
-        );
-
-    }
-
-    document.getElementById("btnRegister").disabled =
-    false;
-
-}
-
-initializeLIFF();
-
-</script>
-
-</body>
-</html>
