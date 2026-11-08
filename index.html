@@ -19,7 +19,7 @@
 }
 
 body{
-    background:#efefef;
+    background:#f2f2f2;
 }
 
 .topbar{
@@ -27,6 +27,7 @@ body{
     color:white;
     text-align:center;
     padding:10px;
+    font-size:12px;
     font-weight:bold;
 }
 
@@ -36,47 +37,74 @@ body{
 }
 
 .logo1{
+    margin-top:40px;
     font-size:28px;
     color:#000;
-    margin-top:50px;
 }
 
 .logo2{
-    font-size:64px;
+    margin-top:5px;
+    font-size:56px;
+    line-height:0.95;
     color:#39b54a;
     font-weight:bold;
-    line-height:0.95;
 }
 
 .user{
-    margin-top:25px;
-    margin-bottom:25px;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+.display-name{
+    font-size:18px;
+    font-weight:bold;
+    color:#333;
+}
+
+.line-user-id{
+    margin-top:10px;
+    font-size:11px;
     color:#888;
+    word-break:break-all;
+}
+
+input{
+    width:100%;
+    height:50px;
+    margin-top:35px;
+    padding:12px;
+    border:2px solid #39b54a;
+    border-radius:4px;
     font-size:16px;
-    min-height:24px;
 }
 
 button{
     width:100%;
     height:55px;
-    margin-top:20px;
+    margin-top:15px;
+    border:none;
+    border-radius:4px;
     background:#39b54a;
     color:white;
-    border:none;
     font-size:24px;
     font-weight:bold;
-    border-radius:4px;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.98);
 }
 
 .footer{
     position:fixed;
-    left:0;
     bottom:0;
-    width:100%;
-    padding:10px;
+    left:0;
+    right:0;
     background:#39b54a;
     color:white;
     text-align:center;
+    padding:8px;
+    font-size:12px;
     font-weight:bold;
 }
 
@@ -92,20 +120,28 @@ REGISTRATION
 
 <div class="container">
 
-<div class="logo1">
-CINEMA
-</div>
+    <div class="logo1">
+        CINEMA
+    </div>
 
-<div class="logo2">
-FUNCTIONAL<br>
-TRAINING
-</div>
+    <div class="logo2">
+        FUNCTIONAL<br>
+        TRAINING
+    </div>
 
-<div id="userInfo" class="user"></div>
+    <div id="userInfo" class="user">
+        &nbsp;
+    </div>
 
-<button onclick="openPowerApps()">
-REGISTER
-</button>
+    <input
+        id="empid"
+        type="text"
+        maxlength="9"
+        placeholder="กรอกรหัสพนักงาน 9 หลัก">
+
+    <button onclick="register()">
+        REGISTER
+    </button>
 
 </div>
 
@@ -116,9 +152,6 @@ LINE OA
 <script>
 
 const LIFF_ID = "2012456984-RGi9YPD7";
-
-const POWER_APPS_URL =
-"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
 
 let profile = null;
 
@@ -138,31 +171,52 @@ async function initializeLIFF(){
         profile = await liff.getProfile();
 
         document.getElementById("userInfo").innerHTML =
-            profile.displayName;
+        `
+        <div class="display-name">
+            ${profile.displayName}
+        </div>
+
+        <div class="line-user-id">
+            ${profile.userId}
+        </div>
+        `;
 
     }
     catch(error){
 
-        console.error(error);
+        console.log(error);
 
     }
 
 }
 
-function openPowerApps(){
+async function register(){
 
-    if(!profile){
+    const empId =
+        document.getElementById("empid").value.trim();
+
+    if(empId === ""){
+
+        alert("กรุณากรอกรหัสพนักงาน");
+
         return;
     }
 
-    const appUrl =
-        POWER_APPS_URL +
-        "&LINE_USER_ID=" +
-        encodeURIComponent(profile.userId) +
-        "&DISPLAY_NAME=" +
-        encodeURIComponent(profile.displayName);
+    const payload = {
 
-    window.location.href = appUrl;
+        EMP_ID: empId,
+        LINE_USER_ID: profile.userId,
+        LINE_DISPLAY_NAME: profile.displayName
+
+    };
+
+    console.log(payload);
+
+    alert(
+        "EMP_ID : " + empId +
+        "\n\nLINE USER ID : " +
+        profile.userId
+    );
 
 }
 
