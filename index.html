@@ -178,15 +178,6 @@ async function registerUser(){
         .value
         .trim();
 
-    if(empId === ""){
-
-        alert("กรุณากรอกรหัสพนักงาน");
-        return;
-
-    }
-
-    document.getElementById("registerBtn").disabled = true;
-
     const payload = {
 
         EMP_ID: empId,
@@ -194,6 +185,8 @@ async function registerUser(){
         LINE_DISPLAY_NAME: profile.displayName
 
     };
+
+    console.log("PAYLOAD", payload);
 
     try{
 
@@ -211,8 +204,6 @@ async function registerUser(){
 
         alert("✅ ส่งข้อมูลเรียบร้อย");
 
-        document.getElementById("empid").value = "";
-
     }
     catch(error){
 
@@ -221,6 +212,8 @@ async function registerUser(){
         alert("❌ เกิดข้อผิดพลาด");
 
     }
+
+}
 
     document.getElementById("registerBtn").disabled = false;
 
