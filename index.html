@@ -174,10 +174,11 @@ async function initializeLIFF(){
 
 async function registerUser(){
 
-    const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
+const empId =
+    document.getElementById("empid")
+    .value
+    .trim()
+    .padStart(9,"0");
 
     if(empId === ""){
 
