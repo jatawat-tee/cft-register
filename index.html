@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,6 +86,7 @@ button{
     color:white;
     font-size:24px;
     font-weight:bold;
+    cursor:pointer;
 }
 
 button:disabled{
@@ -146,3 +146,124 @@ REGISTRATION
 
     <input
         id="empid"
+        type="text"
+        maxlength="9"
+        placeholder="กรอกรหัสพนักงาน 9 หลัก">
+
+    <button
+        id="btnRegister"
+        onclick="register()">
+        REGISTER
+    </button>
+
+    <div id="status" class="status"></div>
+
+</div>
+
+<div class="footer">
+LINE OA
+</div>
+
+<script>
+
+const LIFF_ID = "2012456984-RGi9YPD7";
+
+const FLOW_URL =
+"https://0fa9beaa1fe4eb889f79f3312520c9.86.environment.api.powerplatform.com/powerautomate/automations/direct/cu/12/workflows/4b9e3000ff40478287ef28d68e1dbccf/triggers/manual/paths/invoke?api-version=1";
+
+let profile = null;
+
+async function initializeLIFF(){
+
+    try{
+
+        document.getElementById("userInfo").innerHTML =
+        "STEP 1 : Initializing LIFF...";
+
+        await liff.init({
+            liffId: LIFF_ID
+        });
+
+        document.getElementById("userInfo").innerHTML =
+        "STEP 2 : Checking Login...";
+
+        if(!liff.isLoggedIn()){
+
+            document.getElementById("userInfo").innerHTML =
+            "STEP 3 : Redirect Login";
+
+            liff.login();
+            return;
+        }
+
+        document.getElementById("userInfo").innerHTML =
+        "STEP 4 : Loading Profile";
+
+        profile = await liff.getProfile();
+
+        document.getElementById("userInfo").innerHTML =
+        `
+            <div class="display-name">
+                ${profile.displayName}
+            </div>
+
+            <div class="line-user-id">
+                ${profile.userId}
+            </div>
+        `;
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("userInfo").innerHTML =
+        `
+            <div class="error">
+                ERROR<br><br>
+                ${error.message}
+            </div>
+        `;
+
+    }
+
+}
+
+async function register(){
+
+    const empId =
+        document.getElementById("empid")
+        .value
+        .trim();
+
+    if(empId === ""){
+
+        alert("กรุณากรอกรหัสพนักงาน");
+
+        return;
+
+    }
+
+    if(!profile){
+
+        alert("ไม่พบข้อมูล LINE");
+
+        return;
+
+    }
+
+    const payload = {
+
+        EMP_ID: empId,
+        LINE_USER_ID: profile.userId,
+        LINE_DISPLAY_NAME: profile.displayName
+
+    };
+
+    console.log(payload);
+
+    document.getElementById("status").innerHTML =
+    "กำลังส่งข้อมูล...";
+
+    document.getElementById("btnRegister").disabled =
+    true;
