@@ -45,10 +45,11 @@ body{
     color:#39b54a;
     font-weight:bold;
     line-height:0.95;
+    margin-bottom:30px;
 }
 
 .user{
-    margin-top:30px;
+    margin-top:15px;
     margin-bottom:20px;
     color:#666;
     font-size:16px;
@@ -59,7 +60,6 @@ input{
     padding:14px;
     border:2px solid #39b54a;
     font-size:18px;
-    margin-top:20px;
     background:#fff;
 }
 
@@ -73,10 +73,6 @@ button{
     font-size:24px;
     font-weight:bold;
     border-radius:4px;
-}
-
-button:disabled{
-    background:#999;
 }
 
 .footer{
@@ -118,110 +114,3 @@ TRAINING
     id="empid"
     type="text"
     maxlength="9"
-    placeholder="กรอกรหัสพนักงาน 9 หลัก">
-
-<button
-    id="registerBtn"
-    onclick="registerUser()">
-    REGISTER
-</button>
-
-</div>
-
-<div class="footer">
-LINE OA
-</div>
-
-<script>
-
-const LIFF_ID = "2012456984-RGi9YPD7";
-
-const GAS_URL =
-"https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec";
-
-let profile = null;
-
-async function initializeLIFF(){
-
-    try{
-
-        await liff.init({
-            liffId: LIFF_ID
-        });
-
-        if(!liff.isLoggedIn()){
-            liff.login();
-            return;
-        }
-
-        profile = await liff.getProfile();
-
-        document.getElementById("userInfo").innerHTML =
-            profile.displayName;
-
-        console.log("Display Name:", profile.displayName);
-        console.log("User ID:", profile.userId);
-
-    }
-    catch(error){
-
-        console.error(error);
-
-    }
-
-}
-
-async function registerUser(){
-
-    const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
-
-    const payload = {
-
-        EMP_ID: empId,
-        LINE_USER_ID: profile.userId,
-        LINE_DISPLAY_NAME: profile.displayName
-
-    };
-
-    console.log("PAYLOAD", payload);
-
-    try{
-
-        await fetch(
-            GAS_URL,
-            {
-                method: "POST",
-                mode: "no-cors",
-                headers:{
-                    "Content-Type":"text/plain"
-                },
-                body: JSON.stringify(payload)
-            }
-        );
-
-        alert("✅ ส่งข้อมูลเรียบร้อย");
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        alert("❌ เกิดข้อผิดพลาด");
-
-    }
-
-}
-
-    document.getElementById("registerBtn").disabled = false;
-
-}
-
-initializeLIFF();
-
-</script>
-
-</body>
-</html>
