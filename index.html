@@ -135,6 +135,9 @@ LINE OA
 const LIFF_ID =
 "2012456984-RGi9YPD7";
 
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec";
+
 let profile = null;
 
 async function initializeLIFF(){
@@ -174,27 +177,90 @@ async function registerUser(){
         return;
     }
 
-    document.getElementById(
-      "resultMessage"
-    ).style.display = "block";
+    const payload = {
 
-    document.getElementById(
-      "resultMessage"
-    ).innerHTML =
-    `
-    <h3>✅ ตรวจสอบข้อมูลเรียบร้อย</h3>
-    <p>EMP ID : ${empId}</p>
-    <p>LINE : ${profile.displayName}</p>
-    <p>LINE USER ID : ${profile.userId}</p>
-    <br>
-    <p>
-    ข้อมูลถูกส่งเข้าระบบแล้ว
-    </p>
-    `;
+    EMP_ID: empId,
+    LINE_USER_ID: profile.userId,
+    LINE_DISPLAY_NAME: profile.displayName
 
-    document.getElementById(
-      "empid"
-    ).value = "";
+};
+
+try{
+    
+    await fetch(
+    GAS_URL,
+    {
+        method: "POST",
+        mode: "no-cors",
+        headers:{
+            "Content-Type":"text/plain"
+        },
+        body: JSON.stringify(payload)
+    }
+);
+
+document.getElementById("empid").value = "";
+
+document.getElementById("empid").style.display =
+    "none";
+
+document.getElementById("registerBtn").style.display =
+    "none";    
+
+document.getElementById("resultMessage").style.display =
+    "block";
+
+document.getElementById("resultMessage").innerHTML =
+`
+<div style="text-align:center">
+
+<h2 style="color:#39b54a;">
+✅ ลงทะเบียนสำเร็จ
+</h2>
+
+<p>
+ชื่อ : ${profile.displayName}
+</p>
+
+<p>
+EMP ID : ${empId}
+</p>
+
+<p>
+ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
+</p>
+
+<p>
+ขอบคุณสำหรับการลงทะเบียน
+</p>
+
+<br>
+
+<button
+onclick="closeLiffWindow()"
+style="
+width:100%;
+height:55px;
+background:#39b54a;
+color:white;
+border:none;
+font-size:20px;
+font-weight:bold;
+border-radius:6px;
+">
+เริ่มใช้งาน LINE OA
+</button>
+
+</div>
+`;
+
+}
+
+    function closeLiffWindow(){
+
+    if(liff){
+        liff.closeWindow();
+    }
 
 }
 
