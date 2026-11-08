@@ -63,8 +63,8 @@ body{
 
 .line-user-id{
     margin-top:10px;
-    font-size:11px;
-    color:#888;
+    font-size:12px;
+    color:#000;
     word-break:break-all;
 }
 
@@ -130,7 +130,7 @@ REGISTRATION
     </div>
 
     <div id="userInfo" class="user">
-        &nbsp;
+        Loading...
     </div>
 
     <input
@@ -170,6 +170,8 @@ async function initializeLIFF(){
 
         profile = await liff.getProfile();
 
+        console.log(profile);
+
         document.getElementById("userInfo").innerHTML =
         `
         <div class="display-name">
@@ -184,7 +186,14 @@ async function initializeLIFF(){
     }
     catch(error){
 
-        console.log(error);
+        console.error("LIFF ERROR:", error);
+
+        document.getElementById("userInfo").innerHTML =
+        `
+        <div style="color:red;">
+            LIFF ERROR
+        </div>
+        `;
 
     }
 
@@ -205,8 +214,10 @@ async function register(){
     const payload = {
 
         EMP_ID: empId,
-        LINE_USER_ID: profile.userId,
-        LINE_DISPLAY_NAME: profile.displayName
+
+        LINE_USER_ID: profile ? profile.userId : "",
+
+        LINE_DISPLAY_NAME: profile ? profile.displayName : ""
 
     };
 
@@ -215,8 +226,23 @@ async function register(){
     alert(
         "EMP_ID : " + empId +
         "\n\nLINE USER ID : " +
-        profile.userId
+        payload.LINE_USER_ID +
+        "\n\nDISPLAY NAME : " +
+        payload.LINE_DISPLAY_NAME
     );
+
+    /*
+    STEP ถัดไป
+
+    await fetch("HTTP_POST_URL",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(payload)
+    });
+
+    */
 
 }
 
