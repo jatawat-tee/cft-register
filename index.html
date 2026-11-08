@@ -2,7 +2,6 @@
 <html lang="th">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -29,7 +28,6 @@ body{
     text-align:center;
     padding:10px;
     font-weight:bold;
-    letter-spacing:1px;
 }
 
 .container{
@@ -38,39 +36,44 @@ body{
 }
 
 .logo1{
-    font-size:32px;
-    margin-top:60px;
+    font-size:28px;
     color:#000;
+    margin-top:60px;
 }
 
 .logo2{
     font-size:64px;
-    font-weight:bold;
     color:#39b54a;
+    font-weight:bold;
     line-height:0.95;
 }
 
 .user{
     margin-top:30px;
-    margin-bottom:30px;
-    color:#888;
+    margin-bottom:20px;
+    color:#666;
+    font-size:16px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:2px solid #39b54a;
     font-size:18px;
-    min-height:24px;
+    margin-top:20px;
+    background:#fff;
 }
 
 button{
     width:100%;
-    height:60px;
+    height:55px;
+    margin-top:20px;
     border:none;
     background:#39b54a;
     color:white;
-    font-size:28px;
+    font-size:24px;
     font-weight:bold;
     border-radius:4px;
-}
-
-button:active{
-    transform:scale(.98);
 }
 
 .footer{
@@ -108,7 +111,13 @@ TRAINING
 
 <div id="userInfo" class="user"></div>
 
-<button onclick="openPowerApps()">
+<input
+    id="empid"
+    type="text"
+    maxlength="9"
+    placeholder="กรอกรหัสพนักงาน 9 หลัก">
+
+<button onclick="registerUser()">
 REGISTER
 </button>
 
@@ -122,8 +131,8 @@ LINE OA
 
 const LIFF_ID = "2012456984-RGi9YPD7";
 
-const POWER_APPS_URL =
-"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec";
 
 let profile = null;
 
@@ -145,9 +154,6 @@ async function initializeLIFF(){
         document.getElementById("userInfo").innerHTML =
             profile.displayName;
 
-        console.log("Display Name:", profile.displayName);
-        console.log("User ID:", profile.userId);
-
     }
     catch(error){
 
@@ -157,20 +163,64 @@ async function initializeLIFF(){
 
 }
 
-function openPowerApps(){
+async function registerUser(){
 
-    if(!profile){
+    const empId =
+        document.getElementById("empid")
+        .value
+        .trim();
+
+    if(empId === ""){
+
+        alert("กรุณากรอกรหัสพนักงาน");
+
         return;
     }
 
-    const appUrl =
-        POWER_APPS_URL +
-        "&DISPLAY_NAME=" +
-        encodeURIComponent(profile.displayName) +
-        "&LINE_USER_ID=" +
-        encodeURIComponent(profile.userId);
+    const payload = {
 
-    window.location.href = appUrl;
+        EMP_ID: empId,
+        LINE_USER_ID: profile.userId,
+        LINE_DISPLAY_NAME: profile.displayName
+
+    };
+
+    try{
+
+        const response =
+            await fetch(
+                GAS_URL,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+        const result = await response.json();
+
+        if(result.success){
+
+            alert("✅ ลงทะเบียนสำเร็จ");
+
+            document.getElementById("empid").value = "";
+
+        }else{
+
+            alert("❌ ลงทะเบียนไม่สำเร็จ");
+
+        }
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert("❌ เกิดข้อผิดพลาด");
+
+    }
 
 }
 
