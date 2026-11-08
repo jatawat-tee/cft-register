@@ -165,19 +165,13 @@ async function initializeLIFF(){
     }
     catch(error){
 
-        console.error("LIFF Error:", error);
-
-        alert("ไม่สามารถเชื่อมต่อ LINE ได้");
+        console.error(error);
 
     }
 
 }
 
 async function registerUser(){
-
-    alert("ปุ่ม REGISTER ทำงานแล้ว");
-
-}
 
     const empId =
         document.getElementById("empid")
@@ -190,6 +184,8 @@ async function registerUser(){
         return;
 
     }
+
+    document.getElementById("registerBtn").disabled = true;
 
     const payload = {
 
@@ -213,7 +209,7 @@ async function registerUser(){
             }
         );
 
-        alert("✅ ลงทะเบียนสำเร็จ");
+        alert("✅ ส่งข้อมูลเรียบร้อย");
 
         document.getElementById("empid").value = "";
 
@@ -225,8 +221,6 @@ async function registerUser(){
         alert("❌ เกิดข้อผิดพลาด");
 
     }
-
-}
 
     document.getElementById("registerBtn").disabled = false;
 
