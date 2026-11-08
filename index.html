@@ -170,30 +170,21 @@ async function initializeLIFF(){
 
         profile = await liff.getProfile();
 
-        console.log(profile);
-
         document.getElementById("userInfo").innerHTML =
         `
-        <div class="display-name">
-            ${profile.displayName}
-        </div>
+            <div class="display-name">
+                ${profile.displayName}
+            </div>
 
-        <div class="line-user-id">
-            ${profile.userId}
-        </div>
+            <div class="line-user-id">
+                ${profile.userId}
+            </div>
         `;
 
     }
     catch(error){
 
-        console.error("LIFF ERROR:", error);
-
-        document.getElementById("userInfo").innerHTML =
-        `
-        <div style="color:red;">
-            LIFF ERROR
-        </div>
-        `;
+        console.error(error);
 
     }
 
@@ -215,24 +206,25 @@ async function register(){
 
         EMP_ID: empId,
 
-        LINE_USER_ID: profile ? profile.userId : "",
+        LINE_USER_ID: profile.userId,
 
-        LINE_DISPLAY_NAME: profile ? profile.displayName : ""
+        LINE_DISPLAY_NAME: profile.displayName
 
     };
 
     console.log(payload);
 
     alert(
+        "✅ ลงทะเบียนสำเร็จ\n\n" +
         "EMP_ID : " + empId +
-        "\n\nLINE USER ID : " +
-        payload.LINE_USER_ID +
-        "\n\nDISPLAY NAME : " +
-        payload.LINE_DISPLAY_NAME
+        "\n\nLINE USER ID :\n" +
+        profile.userId +
+        "\n\nDISPLAY NAME :\n" +
+        profile.displayName
     );
 
     /*
-    STEP ถัดไป
+    STEP NEXT
 
     await fetch("HTTP_POST_URL",{
         method:"POST",
