@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Cinema Functional Training</title>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -21,7 +22,7 @@ body{
 
 .topbar{
     background:#39b54a;
-    color:#fff;
+    color:white;
     text-align:center;
     padding:10px;
     font-weight:bold;
@@ -58,6 +59,7 @@ input{
     border:2px solid #39b54a;
     font-size:18px;
     margin-top:20px;
+    background:#fff;
 }
 
 button{
@@ -126,35 +128,48 @@ LINE OA
 
 const LIFF_ID = "2012456984-RGi9YPD7";
 
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec";
+
 let profile = null;
 
 async function initializeLIFF(){
 
-    await liff.init({
-        liffId: LIFF_ID
-    });
+    try{
 
-    if(!liff.isLoggedIn()){
-        liff.login();
-        return;
+        await liff.init({
+            liffId: LIFF_ID
+        });
+
+        if(!liff.isLoggedIn()){
+            liff.login();
+            return;
+        }
+
+        profile = await liff.getProfile();
+
+        document.getElementById("userInfo").innerHTML =
+            profile.displayName;
+
+    }
+    catch(error){
+
+        console.error(error);
+
     }
 
-    profile = await liff.getProfile();
-
-    document.getElementById("userInfo").innerHTML =
-        profile.displayName;
 }
 
 async function registerUser(){
 
     const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
+        document.getElementById("empid").value.trim();
 
     if(empId === ""){
+
         alert("กรุณากรอกรหัสพนักงาน");
         return;
+
     }
 
     const payload = {
@@ -168,7 +183,7 @@ async function registerUser(){
     try{
 
         await fetch(
-            "https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec",
+            GAS_URL,
             {
                 method: "POST",
                 headers:{
