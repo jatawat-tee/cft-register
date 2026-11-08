@@ -110,7 +110,9 @@ TRAINING
 
 <input
     id="empid"
-    type="text"
+    type="tel"
+    inputmode="numeric"
+    pattern="[0-9]*"
     maxlength="9"
     placeholder="กรอกรหัสพนักงาน 9 หลัก">
 
@@ -166,17 +168,25 @@ async function initializeLIFF(){
 
 async function registerUser(){
 
-    const empId =
-        document.getElementById("empid")
-        .value
-        .trim();
+const empId =
+    document.getElementById("empid")
+    .value
+    .trim();
 
-    if(empId === ""){
+if(empId === ""){
 
-        alert("กรุณากรอกรหัสพนักงาน");
-        return;
+    alert("กรุณากรอกรหัสพนักงาน");
+    return;
 
-    }
+}
+
+if(!/^\d{9}$/.test(empId)){
+
+    alert("กรุณากรอกรหัสพนักงานให้เป็นตัวเลข 9 หลัก");
+
+    return;
+
+}
 
     if(!profile){
 
