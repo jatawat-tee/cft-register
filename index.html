@@ -2,51 +2,54 @@
 <html lang="th">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINE Registration</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<title>Cinema Registration</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-        .container {
-            max-width: 420px;
-            margin: 40px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.1);
-        }
+<style>
 
-        h2 {
-            text-align: center;
-            color: #06C755;
-        }
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:20px;
+}
 
-        .info {
-            text-align: center;
-            margin-bottom: 20px;
-            word-break: break-all;
-        }
+.container{
+    max-width:420px;
+    margin:40px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #06C755;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-    </style>
+h2{
+    text-align:center;
+    color:#06C755;
+}
+
+.info{
+    text-align:center;
+    margin-bottom:20px;
+    word-break:break-all;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#06C755;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+</style>
 
 </head>
 
@@ -54,15 +57,15 @@
 
 <div class="container">
 
-    <h2>Cinema Registration</h2>
+<h2>Cinema Registration</h2>
 
-    <div id="userInfo" class="info">
-        Loading...
-    </div>
+<div id="userInfo" class="info">
+Loading...
+</div>
 
-    <button onclick="goToPowerApps()">
-        ลงทะเบียน
-    </button>
+<button onclick="openPowerApps()">
+ลงทะเบียน
+</button>
 
 </div>
 
@@ -70,23 +73,20 @@
 
 const LIFF_ID = "2012456984-RGi9YPD7";
 
-/*
-ใส่ URL ของ Power Apps ที่ Published แล้ว
-*/
-const APP_URL =
-"https://apps.powerapps.com/play/xxxxxxxxxxxxxxxx";
+const POWER_APPS_URL =
+"https://apps.powerapps.com/play/e/0fa9beaa-1fe4-eb88-9f79-f3312520c986/a/ae67169d-16d7-49ae-9762-4468c3fc18c4?tenantId=4b3b64f8-e08e-43bc-95bf-15d8ae1d3d5c";
 
 let profile = null;
 
-async function initializeLIFF() {
+async function initializeLIFF(){
 
-    try {
+    try{
 
         await liff.init({
             liffId: LIFF_ID
         });
 
-        if (!liff.isLoggedIn()) {
+        if(!liff.isLoggedIn()){
             liff.login();
             return;
         }
@@ -95,38 +95,39 @@ async function initializeLIFF() {
 
         document.getElementById("userInfo").innerHTML =
         `
-        <strong>${profile.displayName}</strong>
-        <br><br>
-        LINE USER ID
-        <br>
-        ${profile.userId}
+            <strong>${profile.displayName}</strong>
+            <br><br>
+            LINE USER ID
+            <br>
+            ${profile.userId}
         `;
 
     }
     catch(error){
 
         document.getElementById("userInfo").innerHTML =
-            "เกิดข้อผิดพลาด : " + error.message;
+        error.message;
 
-        console.error(error);
     }
+
 }
 
-function goToPowerApps(){
+function openPowerApps(){
 
     if(!profile){
         alert("ไม่สามารถดึงข้อมูล LINE ได้");
         return;
     }
 
-    const powerAppsUrl =
-        APP_URL +
-        "?LINE_USER_ID=" +
+    const appUrl =
+        POWER_APPS_URL +
+        "&LINE_USER_ID=" +
         encodeURIComponent(profile.userId) +
         "&DISPLAY_NAME=" +
         encodeURIComponent(profile.displayName);
 
-    window.location.href = powerAppsUrl;
+    window.location.href = appUrl;
+
 }
 
 initializeLIFF();
