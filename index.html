@@ -170,89 +170,96 @@ async function registerUser(){
 
     if(!/^\d{9}$/.test(empId)){
 
-        alert(
-          "กรุณากรอกรหัสพนักงาน 9 หลัก"
-        );
-
+        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
         return;
+
     }
 
     const payload = {
 
-    EMP_ID: empId,
-    LINE_USER_ID: profile.userId,
-    LINE_DISPLAY_NAME: profile.displayName
+        EMP_ID: empId,
+        LINE_USER_ID: profile.userId,
+        LINE_DISPLAY_NAME: profile.displayName
 
-};
+    };
 
-try{
-    
-    await fetch(
-    GAS_URL,
-    {
-        method: "POST",
-        mode: "no-cors",
-        headers:{
-            "Content-Type":"text/plain"
-        },
-        body: JSON.stringify(payload)
+    try{
+
+        await fetch(
+            GAS_URL,
+            {
+                method: "POST",
+                mode: "no-cors",
+                headers:{
+                    "Content-Type":"text/plain"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        document.getElementById("empid").value = "";
+
+        document.getElementById("empid").style.display =
+            "none";
+
+        document.getElementById("registerBtn").style.display =
+            "none";
+
+        document.getElementById("resultMessage").style.display =
+            "block";
+
+        document.getElementById("resultMessage").innerHTML =
+        `
+        <div style="text-align:center">
+
+        <h2 style="color:#39b54a;">
+        ✅ ลงทะเบียนสำเร็จ
+        </h2>
+
+        <p>
+        ชื่อใน LINE : ${profile.displayName}
+        </p>
+
+        <p>
+        EMP ID : ${empId}
+        </p>
+
+        <p>
+        ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
+        </p>
+
+        <p>
+        ขอบคุณสำหรับการลงทะเบียน
+        </p>
+
+        <br>
+
+        <button
+        onclick="closeLiffWindow()"
+        style="
+        width:100%;
+        height:55px;
+        background:#39b54a;
+        color:white;
+        border:none;
+        font-size:20px;
+        font-weight:bold;
+        border-radius:6px;
+        ">
+        เริ่มใช้งาน LINE OA
+        </button>
+
+        </div>
+        `;
+
     }
-);
+    catch(error){
 
-document.getElementById("empid").value = "";
+        console.error(error);
 
-document.getElementById("empid").style.display =
-    "none";
+        alert("❌ เกิดข้อผิดพลาด");
 
-document.getElementById("registerBtn").style.display =
-    "none";    
-
-document.getElementById("resultMessage").style.display =
-    "block";
-
-document.getElementById("resultMessage").innerHTML =
-`
-<div style="text-align:center">
-
-<h2 style="color:#39b54a;">
-✅ ลงทะเบียนสำเร็จ
-</h2>
-
-<p>
-ชื่อ : ${profile.displayName}
-</p>
-
-<p>
-EMP ID : ${empId}
-</p>
-
-<p>
-ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
-</p>
-
-<p>
-ขอบคุณสำหรับการลงทะเบียน
-</p>
-
-<br>
-
-<button
-onclick="closeLiffWindow()"
-style="
-width:100%;
-height:55px;
-background:#39b54a;
-color:white;
-border:none;
-font-size:20px;
-font-weight:bold;
-border-radius:6px;
-">
-เริ่มใช้งาน LINE OA
-</button>
-
-</div>
-`;
+    }
 
 }
 
