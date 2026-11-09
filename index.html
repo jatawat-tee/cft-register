@@ -63,6 +63,7 @@ button{
     color:white;
     font-size:24px;
     font-weight:bold;
+    border-radius:6px;
 }
 
 #resultMessage{
@@ -73,7 +74,7 @@ button{
     border:2px solid #39b54a;
     border-radius:8px;
     text-align:left;
-    line-height:1.7;
+    line-height:1.8;
 }
 
 .footer{
@@ -113,6 +114,7 @@ TRAINING
 <input
 id="empid"
 type="tel"
+inputmode="numeric"
 maxlength="9"
 placeholder="กรอกรหัสพนักงาน 9 หลัก">
 
@@ -142,21 +144,32 @@ let profile = null;
 
 async function initializeLIFF(){
 
-    await liff.init({
-        liffId: LIFF_ID
-    });
+    try{
 
-    if(!liff.isLoggedIn()){
-        liff.login();
-        return;
+        await liff.init({
+            liffId: LIFF_ID
+        });
+
+        if(!liff.isLoggedIn()){
+            liff.login();
+            return;
+        }
+
+        profile =
+            await liff.getProfile();
+
+        document.getElementById("userInfo")
+            .innerHTML =
+            profile.displayName;
+
     }
+    catch(error){
 
-    profile =
-        await liff.getProfile();
+        console.error(error);
 
-    document.getElementById("userInfo")
-        .innerHTML =
-        profile.displayName;
+        alert("ไม่สามารถเชื่อมต่อ LINE ได้");
+
+    }
 
 }
 
@@ -170,7 +183,10 @@ async function registerUser(){
 
     if(!/^\d{9}$/.test(empId)){
 
-        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
+        alert(
+            "กรุณากรอกรหัสพนักงาน 9 หลัก"
+        );
+
         return;
 
     }
@@ -188,12 +204,12 @@ async function registerUser(){
         await fetch(
             GAS_URL,
             {
-                method: "POST",
-                mode: "no-cors",
+                method:"POST",
+                mode:"no-cors",
                 headers:{
                     "Content-Type":"text/plain"
                 },
-                body: JSON.stringify(payload)
+                body:JSON.stringify(payload)
             }
         );
 
@@ -235,17 +251,7 @@ async function registerUser(){
         <br>
 
         <button
-        onclick="closeLiffWindow()"
-        style="
-        width:100%;
-        height:55px;
-        background:#39b54a;
-        color:white;
-        border:none;
-        font-size:20px;
-        font-weight:bold;
-        border-radius:6px;
-        ">
+        onclick="closeLiffWindow()">
         เริ่มใช้งาน LINE OA
         </button>
 
@@ -263,7 +269,7 @@ async function registerUser(){
 
 }
 
-    function closeLiffWindow(){
+function closeLiffWindow(){
 
     if(liff){
         liff.closeWindow();
