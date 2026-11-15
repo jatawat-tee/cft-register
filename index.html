@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Cinema Functional Training</title>
 
@@ -11,9 +11,9 @@
 <style>
 
 body{
-    background:#efefef;
-    font-family:Arial,sans-serif;
     margin:0;
+    font-family:Arial,sans-serif;
+    background:#efefef;
 }
 
 .topbar{
@@ -36,9 +36,9 @@ body{
 
 .logo2{
     font-size:64px;
-    color:#39b54a;
     font-weight:bold;
     line-height:.95;
+    color:#39b54a;
 }
 
 .user{
@@ -52,36 +52,35 @@ input{
     padding:14px;
     border:2px solid #39b54a;
     font-size:18px;
+    box-sizing:border-box;
 }
 
 button{
     width:100%;
     height:55px;
     margin-top:20px;
-    background:#39b54a;
     border:none;
-    color:white;
-    font-size:24px;
-    font-weight:bold;
     border-radius:6px;
+    background:#39b54a;
+    color:white;
+    font-size:22px;
+    font-weight:bold;
 }
 
 #resultMessage{
     display:none;
     margin-top:20px;
     background:white;
-    padding:20px;
     border:2px solid #39b54a;
     border-radius:8px;
-    text-align:left;
-    line-height:1.8;
+    padding:20px;
 }
 
 .footer{
     position:fixed;
-    bottom:0;
     left:0;
     right:0;
+    bottom:0;
     background:#39b54a;
     color:white;
     text-align:center;
@@ -89,7 +88,6 @@ button{
 }
 
 </style>
-
 </head>
 
 <body>
@@ -151,15 +149,16 @@ async function initializeLIFF(){
         });
 
         if(!liff.isLoggedIn()){
+
             liff.login();
             return;
+
         }
 
         profile =
             await liff.getProfile();
 
-        document.getElementById("userInfo")
-            .innerHTML =
+        document.getElementById("userInfo").innerHTML =
             profile.displayName;
 
     }
@@ -183,10 +182,14 @@ async function registerUser(){
 
     if(!/^\d{9}$/.test(empId)){
 
-        alert(
-            "กรุณากรอกรหัสพนักงาน 9 หลัก"
-        );
+        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
+        return;
 
+    }
+
+    if(!profile){
+
+        alert("ไม่พบข้อมูล LINE");
         return;
 
     }
@@ -213,8 +216,6 @@ async function registerUser(){
             }
         );
 
-        document.getElementById("empid").value = "";
-
         document.getElementById("empid").style.display =
             "none";
 
@@ -228,7 +229,7 @@ async function registerUser(){
         `
         <div style="text-align:center">
 
-        <h2 style="color:#39b54a;">
+        <h2 style="color:#39b54a">
         ✅ ลงทะเบียนสำเร็จ
         </h2>
 
@@ -241,18 +242,15 @@ async function registerUser(){
         </p>
 
         <p>
-        ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
+        ระบบได้รับข้อมูลของท่านเรียบร้อยแล้ว
         </p>
 
         <p>
-        ขอบคุณสำหรับการลงทะเบียน
+        กรุณากดปุ่มด้านล่างเพื่อกลับไปใช้งาน LINE OA
         </p>
 
-        <br>
-
-        <button
-        onclick="closeLiffWindow()">
-        เริ่มใช้งาน LINE OA
+        <button onclick="openLineOA()">
+        เข้าใช้งาน LINE OA
         </button>
 
         </div>
@@ -269,11 +267,10 @@ async function registerUser(){
 
 }
 
-function closeLiffWindow(){
+function openLineOA(){
 
-    if(liff){
-        liff.closeWindow();
-    }
+    window.location.href =
+    "https://line.me/R/ti/p/@003bmmlp";
 
 }
 
