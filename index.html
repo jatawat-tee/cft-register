@@ -306,10 +306,31 @@ async function registerUser(){
           .style.display =
           "block";
 
-        if(
-          result.status ===
-          "ALREADY_REGISTERED"
-        ){
+if(result.status === "ALREADY_REGISTERED_LINE"){
+    showResult("ALREADY_REGISTERED_LINE");
+    return;
+}
+
+if(result.status === "ALREADY_REGISTERED_EMP"){
+    showResult("ALREADY_REGISTERED_EMP");
+    return;
+}
+
+if(result.status === "EMP_NOT_FOUND"){
+    showResult("EMP_NOT_FOUND");
+    return;
+}
+
+if(result.status === "SUCCESS"){
+    showResult(
+        "SUCCESS",
+        {
+            empId: empId,
+            nickname: nickname
+        }
+    );
+    return;
+}
 
           document
             .getElementById(
@@ -403,6 +424,166 @@ function openLineOA(){
     window.location.href =
       LINE_OA_URL;
 
+}
+
+function showResult(status, data = {}) {
+
+    document.getElementById("empid").style.display = "none";
+    document.getElementById("nickname").style.display = "none";
+    document.getElementById("registerBtn").style.display = "none";
+
+    const box =
+        document.getElementById("resultMessage");
+
+    box.style.display = "block";
+
+    switch(status){
+
+        case "SUCCESS":
+
+            box.innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#39b54a;">
+            ✅ ลงทะเบียนสำเร็จ
+            </h2>
+
+            <p>
+            ข้อมูลของท่านถูกบันทึกเข้าระบบเรียบร้อยแล้ว
+            </p>
+
+            <hr>
+
+            <p>
+            <b>รหัสพนักงาน</b><br>
+            ${data.empId || "-"}
+            </p>
+
+            <p>
+            <b>ชื่อเล่น</b><br>
+            ${data.nickname || "-"}
+            </p>
+
+            <p>
+            📩 ระบบได้ส่งข้อความต้อนรับไปยัง LINE OA ของท่านแล้ว
+            </p>
+
+            <button
+            class="success-btn"
+            onclick="openLineOA()">
+
+            🎓 เข้าใช้งาน Cinema Training
+
+            </button>
+
+            </div>
+            `;
+            break;
+
+        case "ALREADY_REGISTERED_LINE":
+
+            box.innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#ff9800;">
+            ⚠️ บัญชี LINE นี้ลงทะเบียนแล้ว
+            </h2>
+
+            <p>
+            บัญชี LINE ของท่านได้ลงทะเบียนไว้ในระบบแล้ว
+            </p>
+
+            <button
+            class="success-btn"
+            onclick="openLineOA()">
+
+            🎓 เข้าใช้งาน Cinema Training
+
+            </button>
+
+            </div>
+            `;
+            break;
+
+        case "ALREADY_REGISTERED_EMP":
+
+            box.innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#ff9800;">
+            ⚠️ รหัสพนักงานถูกใช้งานแล้ว
+            </h2>
+
+            <p>
+            EMP ID นี้มีการลงทะเบียนในระบบแล้ว
+            </p>
+
+            <button
+            class="success-btn"
+            onclick="openLineOA()">
+
+            🎓 เข้าใช้งาน Cinema Training
+
+            </button>
+
+            </div>
+            `;
+            break;
+
+        case "EMP_NOT_FOUND":
+
+            box.innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#e53935;">
+            ❌ ไม่พบรหัสพนักงาน
+            </h2>
+
+            <p>
+            กรุณาตรวจสอบรหัสพนักงานอีกครั้ง
+            </p>
+
+            <button
+            class="success-btn"
+            onclick="resetForm()">
+
+            🔄 ลองใหม่อีกครั้ง
+
+            </button>
+
+            </div>
+            `;
+            break;
+
+        default:
+
+            box.innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#e53935;">
+            ❌ ระบบขัดข้องชั่วคราว
+            </h2>
+
+            <button
+            class="success-btn"
+            onclick="resetForm()">
+
+            🔄 ลองใหม่อีกครั้ง
+
+            </button>
+
+            </div>
+            `;
+    }
+}
+
+function resetForm(){
+    location.reload();
 }
 
 initializeLIFF();
