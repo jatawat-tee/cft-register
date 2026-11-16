@@ -2,14 +2,19 @@
 <html lang="th">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Cinema Functional Training</title>
 
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <style>
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
@@ -19,53 +24,68 @@ body{
 
 .topbar{
     background:#39b54a;
-    color:white;
+    color:#fff;
     text-align:center;
-    padding:10px;
+    padding:12px;
     font-weight:bold;
+    font-size:18px;
 }
 
 .container{
-    padding:30px;
-    text-align:center;
+    padding:20px;
+    max-width:500px;
+    margin:auto;
 }
 
 .logo1{
-    font-size:28px;
-    margin-top:60px;
+    font-size:24px;
+    margin-top:20px;
+    text-align:center;
 }
 
 .logo2{
-    font-size:64px;
+    font-size:42px;
     color:#39b54a;
     font-weight:bold;
-    line-height:.95;
+    line-height:1;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.form-card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:
+      0 2px 10px rgba(0,0,0,.08);
 }
 
 .user{
-    margin-top:20px;
-    margin-bottom:20px;
-    color:#666;
+    background:#f7f7f7;
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:15px;
+    color:#444;
+    font-weight:bold;
 }
 
 input{
     width:100%;
-    box-sizing:border-box;
-    padding:14px;
-    border:2px solid #39b54a;
+    padding:18px;
     font-size:18px;
-    margin-bottom:10px;
+    border:2px solid #39b54a;
+    border-radius:8px;
+    margin-bottom:12px;
 }
 
 button{
     width:100%;
-    height:55px;
-    margin-top:10px;
-    background:#39b54a;
+    height:58px;
     border:none;
-    border-radius:6px;
+    border-radius:10px;
+    background:#39b54a;
     color:white;
-    font-size:24px;
+    font-size:22px;
     font-weight:bold;
 }
 
@@ -74,23 +94,26 @@ button{
     margin-top:20px;
     background:white;
     border:2px solid #39b54a;
-    border-radius:8px;
+    border-radius:12px;
     padding:20px;
     line-height:1.8;
 }
 
+.success-btn{
+    margin-top:20px;
+}
+
 .footer{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
+    margin-top:30px;
     background:#39b54a;
     color:white;
     text-align:center;
-    padding:10px;
+    padding:12px;
+    font-size:16px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -110,26 +133,34 @@ FUNCTIONAL<br>
 TRAINING
 </div>
 
-<div id="userInfo" class="user"></div>
+<div class="form-card">
 
-<input
-id="empid"
-type="tel"
-inputmode="numeric"
-maxlength="9"
-placeholder="กรอกรหัสพนักงาน 9 หลัก">
+    <div
+    id="userInfo"
+    class="user">
+    กำลังโหลดข้อมูล...
+    </div>
 
-<input
-id="nickname"
-type="text"
-maxlength="50"
-placeholder="ชื่อเล่น">
+    <input
+    id="empid"
+    type="tel"
+    inputmode="numeric"
+    maxlength="9"
+    placeholder="กรอกรหัสพนักงาน 9 หลัก">
 
-<button
-id="registerBtn"
-onclick="registerUser()">
-REGISTER
-</button>
+    <input
+    id="nickname"
+    type="text"
+    maxlength="50"
+    placeholder="ชื่อเล่น">
+
+    <button
+    id="registerBtn"
+    onclick="registerUser()">
+    REGISTER
+    </button>
+
+</div>
 
 <div id="resultMessage"></div>
 
@@ -146,6 +177,9 @@ const LIFF_ID =
 
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbyn_uG_1bB4n0hIDkI0EsRDAW1Vt5vmxuw3hon9PlRJpaVJNd1rFhyu_LmhST7uQJsE/exec";
+
+const LINE_OA_URL =
+"https://line.me/R/ti/p/@003bmmlp";
 
 let profile = null;
 
@@ -167,8 +201,10 @@ async function initializeLIFF(){
         profile =
             await liff.getProfile();
 
-        document.getElementById("userInfo")
+        document
+            .getElementById("userInfo")
             .innerHTML =
+            "👋 " +
             profile.displayName;
 
     }
@@ -176,7 +212,9 @@ async function initializeLIFF(){
 
         console.error(error);
 
-        alert("ไม่สามารถเชื่อมต่อ LINE ได้");
+        alert(
+          "ไม่สามารถเชื่อมต่อ LINE ได้"
+        );
 
     }
 
@@ -185,73 +223,131 @@ async function initializeLIFF(){
 async function registerUser(){
 
     const empId =
-        document.getElementById("empid")
+        document
+        .getElementById("empid")
         .value
         .trim()
         .padStart(9,"0");
 
     const nickname =
-        document.getElementById("nickname")
+        document
+        .getElementById("nickname")
         .value
         .trim();
 
     if(!/^\d{9}$/.test(empId)){
 
-        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
-        return;
+        alert(
+          "กรุณากรอกรหัสพนักงาน 9 หลัก"
+        );
 
+        return;
     }
 
     if(nickname === ""){
 
-        alert("กรุณากรอกชื่อเล่น");
+        alert(
+          "กรุณากรอกชื่อเล่น"
+        );
+
         return;
-
-    }
-
-    if(!profile){
-
-        alert("ไม่พบข้อมูล LINE");
-        return;
-
     }
 
     const payload = {
 
         EMP_ID: empId,
+
         NICKNAME: nickname,
-        LINE_USER_ID: profile.userId,
-        LINE_DISPLAY_NAME: profile.displayName
+
+        LINE_USER_ID:
+          profile.userId,
+
+        LINE_DISPLAY_NAME:
+          profile.displayName
 
     };
 
     try{
 
-        await fetch(
+        const response =
+          await fetch(
             GAS_URL,
             {
                 method:"POST",
-                mode:"no-cors",
                 headers:{
-                    "Content-Type":"text/plain"
+                    "Content-Type":
+                      "text/plain"
                 },
-                body:JSON.stringify(payload)
+                body:
+                  JSON.stringify(payload)
             }
-        );
+          );
 
-        document.getElementById("empid").style.display =
-            "none";
+        const result =
+          await response.json();
 
-        document.getElementById("nickname").style.display =
-            "none";
+        document
+          .getElementById("empid")
+          .style.display =
+          "none";
 
-        document.getElementById("registerBtn").style.display =
-            "none";
+        document
+          .getElementById("nickname")
+          .style.display =
+          "none";
 
-        document.getElementById("resultMessage").style.display =
-            "block";
+        document
+          .getElementById("registerBtn")
+          .style.display =
+          "none";
 
-        document.getElementById("resultMessage").innerHTML =
+        document
+          .getElementById("resultMessage")
+          .style.display =
+          "block";
+
+        if(
+          result.status ===
+          "ALREADY_REGISTERED"
+        ){
+
+          document
+            .getElementById(
+              "resultMessage"
+            )
+            .innerHTML =
+            `
+            <div style="text-align:center">
+
+            <h2 style="color:#ff9800;">
+            ⚠️
+            ท่านเคยลงทะเบียนแล้ว
+            </h2>
+
+            <p>
+            LINE นี้ลงทะเบียนไว้แล้ว
+            </p>
+
+            <button
+            class="success-btn"
+            onclick="openLineOA()">
+
+            เข้าใช้งาน LINE OA
+
+            </button>
+
+            </div>
+            `;
+
+          return;
+        }
+
+        document
+        .getElementById(
+          "resultMessage"
+        )
+        .innerHTML =
+
         `
         <div style="text-align:center">
 
@@ -260,35 +356,53 @@ async function registerUser(){
         </h2>
 
         <p>
-        ชื่อใน LINE : ${profile.displayName}
+        ชื่อใน LINE :
+        ${profile.displayName}
         </p>
 
         <p>
-        EMP ID : ${empId}
+        EMP ID :
+        ${empId}
         </p>
 
         <p>
-        ชื่อเล่น : ${nickname}
+        ชื่อเล่น :
+        ${nickname}
         </p>
 
         <p>
-        ระบบได้รับข้อมูลของท่านเรียบร้อยแล้ว
+        ระบบได้รับข้อมูลเรียบร้อยแล้ว
         </p>
 
-        <p>
-        ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
-        </p>
+        <button
+        class="success-btn"
+        onclick="openLineOA()">
+
+        เข้าใช้งาน LINE OA
+
+        </button>
 
         </div>
         `;
+
     }
     catch(error){
 
         console.error(error);
 
-        alert("❌ เกิดข้อผิดพลาด");
+        alert(
+          "❌ เกิดข้อผิดพลาด"
+        );
 
     }
+
+}
+
+function openLineOA(){
+
+    window.location.href =
+      LINE_OA_URL;
+
 }
 
 initializeLIFF();
