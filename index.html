@@ -348,9 +348,8 @@ function openLineOA(){
 
 function showResult(status, data = {}) {
 
-    document.getElementById("empid").style.display = "none";
-    document.getElementById("nickname").style.display = "none";
-    document.getElementById("registerBtn").style.display = "none";
+document.querySelector(".form-card")
+    .style.display = "none";
 
     const box =
         document.getElementById("resultMessage");
