@@ -237,188 +237,108 @@ async function registerUser(){
 
     if(!/^\d{9}$/.test(empId)){
 
-        alert(
-          "กรุณากรอกรหัสพนักงาน 9 หลัก"
-        );
-
+        alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
         return;
+
     }
 
     if(nickname === ""){
 
-        alert(
-          "กรุณากรอกชื่อเล่น"
-        );
-
+        alert("กรุณากรอกชื่อเล่น");
         return;
+
+    }
+
+    if(!profile){
+
+        showResult("ERROR");
+        return;
+
     }
 
     const payload = {
 
         EMP_ID: empId,
-
         NICKNAME: nickname,
-
-        LINE_USER_ID:
-          profile.userId,
-
-        LINE_DISPLAY_NAME:
-          profile.displayName
+        LINE_USER_ID: profile.userId,
+        LINE_DISPLAY_NAME: profile.displayName
 
     };
 
     try{
 
         const response =
-          await fetch(
-            GAS_URL,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":
-                      "text/plain"
-                },
-                body:
-                  JSON.stringify(payload)
-            }
-          );
+            await fetch(
+                GAS_URL,
+                {
+                    method: "POST",
+                    headers:{
+                        "Content-Type":"text/plain"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
 
         const result =
-          await response.json();
+            await response.json();
 
-        document
-          .getElementById("empid")
-          .style.display =
-          "none";
+        if(result.status === "ALREADY_REGISTERED_LINE"){
 
-        document
-          .getElementById("nickname")
-          .style.display =
-          "none";
+            showResult(
+                "ALREADY_REGISTERED_LINE"
+            );
 
-        document
-          .getElementById("registerBtn")
-          .style.display =
-          "none";
+            return;
 
-        document
-          .getElementById("resultMessage")
-          .style.display =
-          "block";
-
-if(result.status === "ALREADY_REGISTERED_LINE"){
-    showResult("ALREADY_REGISTERED_LINE");
-    return;
-}
-
-if(result.status === "ALREADY_REGISTERED_EMP"){
-    showResult("ALREADY_REGISTERED_EMP");
-    return;
-}
-
-if(result.status === "EMP_NOT_FOUND"){
-    showResult("EMP_NOT_FOUND");
-    return;
-}
-
-if(result.status === "SUCCESS"){
-    showResult(
-        "SUCCESS",
-        {
-            empId: empId,
-            nickname: nickname
-        }
-    );
-    return;
-}
-
-          document
-            .getElementById(
-              "resultMessage"
-            )
-            .innerHTML =
-            `
-            <div style="text-align:center">
-
-            <h2 style="color:#ff9800;">
-            ⚠️
-            ท่านเคยลงทะเบียนแล้ว
-            </h2>
-
-            <p>
-            LINE นี้ลงทะเบียนไว้แล้ว
-            </p>
-
-            <button
-            class="success-btn"
-            onclick="openLineOA()">
-
-            เข้าใช้งาน LINE OA
-
-            </button>
-
-            </div>
-            `;
-
-          return;
         }
 
-        document
-        .getElementById(
-          "resultMessage"
-        )
-        .innerHTML =
+        if(result.status === "ALREADY_REGISTERED_EMP"){
 
-        `
-        <div style="text-align:center">
+            showResult(
+                "ALREADY_REGISTERED_EMP"
+            );
 
-        <h2 style="color:#39b54a;">
-        ✅ ลงทะเบียนสำเร็จ
-        </h2>
+            return;
 
-        <p>
-        ชื่อใน LINE :
-        ${profile.displayName}
-        </p>
+        }
 
-        <p>
-        EMP ID :
-        ${empId}
-        </p>
+        if(result.status === "EMP_NOT_FOUND"){
 
-        <p>
-        ชื่อเล่น :
-        ${nickname}
-        </p>
+            showResult(
+                "EMP_NOT_FOUND"
+            );
 
-        <p>
-        ระบบได้รับข้อมูลเรียบร้อยแล้ว
-        </p>
+            return;
 
-        <button
-        class="success-btn"
-        onclick="openLineOA()">
+        }
 
-        เข้าใช้งาน LINE OA
+        if(result.status === "SUCCESS"){
 
-        </button>
+            showResult(
+                "SUCCESS",
+                {
+                    empId: empId,
+                    nickname: nickname
+                }
+            );
 
-        </div>
-        `;
+            return;
+
+        }
+
+        showResult("ERROR");
 
     }
     catch(error){
 
         console.error(error);
 
-        alert(
-          "❌ เกิดข้อผิดพลาด"
-        );
+        showResult("ERROR");
 
     }
 
 }
-
+    
 function openLineOA(){
 
     window.location.href =
