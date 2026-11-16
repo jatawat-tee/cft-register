@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Cinema Functional Training</title>
 
@@ -12,13 +13,13 @@
 
 body{
     margin:0;
-    font-family:Arial,sans-serif;
     background:#efefef;
+    font-family:Arial,sans-serif;
 }
 
 .topbar{
     background:#39b54a;
-    color:#fff;
+    color:white;
     text-align:center;
     padding:10px;
     font-weight:bold;
@@ -36,9 +37,9 @@ body{
 
 .logo2{
     font-size:64px;
+    color:#39b54a;
     font-weight:bold;
     line-height:.95;
-    color:#39b54a;
 }
 
 .user{
@@ -49,21 +50,22 @@ body{
 
 input{
     width:100%;
+    box-sizing:border-box;
     padding:14px;
     border:2px solid #39b54a;
     font-size:18px;
-    box-sizing:border-box;
+    margin-bottom:10px;
 }
 
 button{
     width:100%;
     height:55px;
-    margin-top:20px;
+    margin-top:10px;
+    background:#39b54a;
     border:none;
     border-radius:6px;
-    background:#39b54a;
     color:white;
-    font-size:22px;
+    font-size:24px;
     font-weight:bold;
 }
 
@@ -74,13 +76,14 @@ button{
     border:2px solid #39b54a;
     border-radius:8px;
     padding:20px;
+    line-height:1.8;
 }
 
 .footer{
     position:fixed;
+    bottom:0;
     left:0;
     right:0;
-    bottom:0;
     background:#39b54a;
     color:white;
     text-align:center;
@@ -164,7 +167,8 @@ async function initializeLIFF(){
         profile =
             await liff.getProfile();
 
-        document.getElementById("userInfo").innerHTML =
+        document.getElementById("userInfo")
+            .innerHTML =
             profile.displayName;
 
     }
@@ -186,9 +190,21 @@ async function registerUser(){
         .trim()
         .padStart(9,"0");
 
+    const nickname =
+        document.getElementById("nickname")
+        .value
+        .trim();
+
     if(!/^\d{9}$/.test(empId)){
 
         alert("กรุณากรอกรหัสพนักงาน 9 หลัก");
+        return;
+
+    }
+
+    if(nickname === ""){
+
+        alert("กรุณากรอกชื่อเล่น");
         return;
 
     }
@@ -203,6 +219,7 @@ async function registerUser(){
     const payload = {
 
         EMP_ID: empId,
+        NICKNAME: nickname,
         LINE_USER_ID: profile.userId,
         LINE_DISPLAY_NAME: profile.displayName
 
@@ -225,6 +242,9 @@ async function registerUser(){
         document.getElementById("empid").style.display =
             "none";
 
+        document.getElementById("nickname").style.display =
+            "none";
+
         document.getElementById("registerBtn").style.display =
             "none";
 
@@ -235,7 +255,7 @@ async function registerUser(){
         `
         <div style="text-align:center">
 
-        <h2 style="color:#39b54a">
+        <h2 style="color:#39b54a;">
         ✅ ลงทะเบียนสำเร็จ
         </h2>
 
@@ -248,20 +268,19 @@ async function registerUser(){
         </p>
 
         <p>
+        ชื่อเล่น : ${nickname}
+        </p>
+
+        <p>
         ระบบได้รับข้อมูลของท่านเรียบร้อยแล้ว
         </p>
 
         <p>
-        กรุณากดปุ่มด้านล่างเพื่อกลับไปใช้งาน LINE OA
+        ระบบได้ส่งข้อความต้อนรับไปยัง LINE ของท่านแล้ว
         </p>
-
-        <button onclick="openLineOA()">
-        เข้าใช้งาน LINE OA
-        </button>
 
         </div>
         `;
-
     }
     catch(error){
 
@@ -270,14 +289,6 @@ async function registerUser(){
         alert("❌ เกิดข้อผิดพลาด");
 
     }
-
-}
-
-function openLineOA(){
-
-    window.location.href =
-    "https://line.me/R/ti/p/@003bmmlp";
-
 }
 
 initializeLIFF();
