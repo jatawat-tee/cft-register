@@ -112,6 +112,29 @@ button{
     font-size:16px;
 }
 
+.loading{
+
+    animation:
+    pulse 1s infinite;
+
+}
+
+@keyframes pulse{
+
+    0%{
+        opacity:.5;
+    }
+
+    50%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:.5;
+    }
+
+}
+
 </style>
 
 </head>
@@ -157,7 +180,9 @@ TRAINING
     <button
     id="registerBtn"
     onclick="registerUser()">
+    
     REGISTER
+
     </button>
 
 </div>
@@ -221,6 +246,19 @@ async function initializeLIFF(){
 }
 
 async function registerUser(){
+
+    const btn =
+    document.getElementById(
+        "registerBtn"
+    );
+
+    btn.disabled = true;
+
+    btn.innerHTML =
+    "⏳ กำลังลงทะเบียน...";
+
+    btn.style.background =
+    "#9e9e9e";
 
     const empId =
         document
@@ -332,6 +370,14 @@ async function registerUser(){
     catch(error){
 
         console.error(error);
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+        "REGISTER";
+
+        btn.style.background =
+        "#39b54a";
 
         showResult("ERROR");
 
